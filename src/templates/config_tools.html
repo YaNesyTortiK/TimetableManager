@@ -1,0 +1,23 @@
+<div class="cfg_elem">
+    <h3 class="elem_title">Логи</h3>
+    <button class="tool-btn" onclick="window.open('/download/logs/', '_blank')">Скачать лог</button>
+    <button class="tool-btn" onclick="window.open('/download/logs-100/', '_blank')">Последние 100 строк лога</button>
+    <button class="tool-btn" onclick="window.open('/logs-clear/', '_blank')">Очистить лог</button>
+</div>
+<div class="cfg_elem">
+    <h3 class="elem_title">Данные</h3>
+    <button class="tool-btn" onclick="window.open('/download/current/', '_blank')">Скачать данные</button>
+    <button class="tool-btn" onclick="window.open('/download/current-json/', '_blank')">Скачать данные в формате json</button>
+    <button class="tool-btn" onclick="window.open('/download/example/', '_blank')">Скачать пример данных</button>
+</div>
+<div class="cfg_elem">
+    <h3 class="elem_title">Управление</h3>
+    <button class="tool-btn" onclick="window.location.replace('/cfg_change_psswd/')">Изменить пароль</button>
+    <button class="tool-btn" onclick="window.location.replace('/cfg_add_custom_function/')">Создать кастомную функцию</button>
+    {% if config.custom_functions | length > 0 %}
+        <button class="tool-btn" onclick="window.location.replace('/cfg_remove_custom_function/')">Удалить кастомную функцию</button>
+    {% endif %}
+    {% if del_files | length > 1 %}
+        <button class="tool-btn" onclick="window.location.replace('/cfg_remove_old_files/')">Удалить старые файлы с расписанием (Всего: {{ del_files | length -1 }})</button>
+    {% endif %}
+</div>

@@ -1,0 +1,19 @@
+{% extends "config_base.html" %}
+{% block title %}
+Добавление функции
+{% endblock %}
+{% block content %}
+    {% if error %}
+        <p class="upload_error">{{ error }}</p>
+    {% endif %}
+    {% if uploaded %}
+        <p class="upload_success">Скрипт успешно загружен.</p>
+    {% endif %}
+    <h3>Внимание! Скрипты не проверяются на наличие ошибок или на пряммую угрозу безопасности данных! Будьте внимательны при загрузке!</h3>
+    <form action='/cfg_add_custom_function/' method="POST">
+        <input type="text" name="name" placeholder="Имя функции" style="width: 15%;"><br>
+        <input type="text" name="desc" placeholder="Описание (необяз.)" style="width: 15%;"><br>
+        <textarea rows='1' name="cmd" placeholder="Консольная команда" style="width: 35%;" oninput="this.style.height = '1px';this.style.height = `${this.scrollHeight}px`;"></textarea><br>
+        <button id="file_submit_btn" type="Submit">Загрузить скрипт</button>
+    </form>
+{% endblock content %}

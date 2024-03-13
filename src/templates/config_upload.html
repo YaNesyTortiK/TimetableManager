@@ -1,0 +1,26 @@
+{% extends "config_base.html" %}
+{% block title %}
+Загрузить файл
+{% endblock %}
+{% block content %}
+    {% if not config.is_setup %}
+        <h1>Внимание вы не можете использовать эту функцию, сервер не настроен. <a href="/config/">Перейти к настройке</a></h1>
+    {% else %}
+        {% if error %}
+            <p class="upload_error">{{ error }}</p>
+        {% endif %}
+        {% if uploaded %}
+            <p class="upload_success">Файл успешно загружен, данные успешно обновлены.</p>
+        {% endif %}
+        <form action='/upload/' method="POST" enctype="multipart/form-data">
+            <div class="input_field_wrap">
+                <input id="file_input_field" type="file" name="file">
+                <p id="input_field_p">Нажмите для загрузки файла или перетащите</p>
+            </div>
+            <button id="file_submit_btn" type="Submit">Отправить файл</button>
+        </form>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/upload_manager.js') }}"></script>
+{% endblock %}

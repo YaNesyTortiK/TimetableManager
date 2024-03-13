@@ -1,0 +1,11 @@
+<div class="popup__bg" onclick="close_popup(this)">
+    <div class="popup" onclick="this.classList.add('clicked')">
+        <h3 class="klass_title">{{ klass }} {{ day }}</h3>
+        <table class="inner_timetable in_popup" day_num="{{ day_num }}">{% for lesson in data %}<tr true_num="{{ lesson.true_num }}">
+                <td class="lesson_num" style="color:{{lesson.color}};">{{ lesson.num }}</td>{% if lesson.val %}<td
+                    class="lesson_val padded" style="color:{{lesson.color}};">{% for part in lesson.val %} {{ part |
+                    replace(None, '') }}<br>{% endfor %}</td>{% else %}<td class="lesson_val padded" style="color:#000">
+                </td>{% endif %}
+            </tr>{% endfor %}</table>
+    </div>
+</div>

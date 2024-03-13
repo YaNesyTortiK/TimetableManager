@@ -1,0 +1,12 @@
+{% extends "config_base.html" %}
+{% block title %}
+Добавление функции
+{% endblock %}
+{% block content %}
+    {% if error %}
+        <p class="upload_error">{{ error }}</p>
+    {% endif %}
+    {%- for func in config.custom_functions -%}
+        <button class="tool-btn" onclick="window.location.replace('/cfg_remove_custom_function/{{ func }}/')">Удалить "{{ func }}"</button>
+    {%- endfor -%}
+{% endblock content %}

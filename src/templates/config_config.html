@@ -1,0 +1,216 @@
+{% extends "config_base.html" %}
+{% block title %}
+Настройка
+{% endblock %}
+{% block content %}
+    {% if not config.is_setup %}
+        <h1>Перед первоначальной настройкой рекомендуется ознакомиться с документацией и руководством пользователя.</h1>
+    {% endif %}
+    <div class="cfg_elem">
+        <h3 class="elem_title">Настройки сервера</h3>
+        <p class="inline_elem">IP адрес: <input id="ip" value="{{ config.host }}" onchange="unsaved()"></p>
+        <p class="inline_elem">Порт: <input id="port" value="{{ config.port }}" onchange="unsaved()"></p>
+        <p class="why inline_elem"
+                data-tooltip="Обратите внимание, что доступ к данной странице настройки, при изменении этих параметров, будет осуществляется по новому адресу. Убедитесь, что введенный ip и port являются доступными для данного пк. В противном случае, воспользуйтесь изменением конфигурации через консоль на сервере. Потребуется перезагрузка сервера!">(?)</p>
+        {% if config.debug %}
+            <p>Отладка: <input type="checkbox" id="debug" checked  onchange="unsaved()"></p>
+        {% else %}
+            <p>Отладка: <input type="checkbox" id="debug" onchange="unsaved()"></p>
+        {% endif %}
+        {% if config.log_filename %}
+            <p class="inline_elem">Файл для логов: <input id="log_filename" value="{{ config.log_filename }}" onchange="unsaved()"><p class="why inline_elem"
+                data-tooltip="По умолчанию, если поле пустое, будет установлено log.txt">(?)</p></p>
+        {% else %}
+            <p class="inline_elem">Файл для логов: <input id="log_filename" onchange="unsaved()"><p class="why inline_elem"
+                data-tooltip="По умолчанию, если поле пустое, будет установлено log.txt">(?)</p></p>
+        {% endif %}
+        {% if config.log_to_console %}
+            <p>Писать логи в консоль: <input type="checkbox" id="log_to_console" checked onchange="unsaved()"></p>
+        {% else %}
+            <p>Писать логи в консоль: <input type="checkbox" id="log_to_console" onchange="unsaved()"></p>
+        {% endif %}
+    </div>
+    <div class="cfg_elem">
+        <h3 class="elem_title">Настройки данных</h3>
+        <p style="display: none;" class="inline_elem">Использовать web-редактор: <input class="inline_elem" type="checkbox" disabled="true" id="use_web_editor" onchange="unsaved()"> 
+            <p style="display: none;" class="why inline_elem"
+                data-tooltip="Данная функция недоступна для этой версии">(?)</p></p><!-- Считайте что это пасхалка (когда то это работало) -->
+        <div id="data_settings">
+            <p class="inline_elem">Директория с таблицей: <input id="directory" value="{{ config.directory }}" onchange="unsaved()"> 
+                <p class="why inline_elem"
+                data-tooltip="Укажите путь до папки, где будут находится .xlsx файлы с расписанием. Пример: C:\Users\User\Documents\Raspisanie\">(?)</p></p>
+        </div>
+        <p class="inline_elem">Время жизни данных: <input class="inline_elem" type="number" id="lifetime" value="{{ config.lifetime }}" min="0" onchange="unsaved()"> секунд. 
+            <p class="why inline_elem"
+                data-tooltip="Как часто программа будет принудительно обновлять данные из файла. Потребуется перезагрузка сервера! (Если установлен 0, автоматического обновления происходить не будет)">(?)</p></p>
+    </div>
+    <div class="cfg_elem">
+        <h3 class="elem_title">Настройки iframe
+            <p class="why inline_elem"
+                data-tooltip="Iframe - сгенерированный файл, в данном случае с расписанием, для вставки на другой сайт.">(?)</p></h3>
+        <div class="inline_elem cfg_elem">
+            {% if config.save_iframe %}
+                <p>Сохранять и генерировать iframe: <input type="checkbox" checked id="save_iframe" onchange="unsaved()"></p>
+            {% else %}
+                <p>Сохранять и генерировать iframe: <input type="checkbox" id="save_iframe" onchange="unsaved()"></p>
+            {% endif %}
+            <p class="inline_elem">Путь сохранениия файла: <input id="iframe_file" value="{{ config.iframe_file }}" onchange="unsaved()">
+                <p class="why inline_elem"
+                    data-tooltip="Укажите имя и путь до файла, куда будет сохраняться сгенерированный html документ. Пример: C:\Users\User\Documents\iframe.html">(?)</p></p>
+            <p>Количество колонок в таблице: <input id="iframe_columns" type="number" value="{{ config.iframe_columns }}" min="1" onchange="unsaved()"></p>
+            <p class="inline_elem">Количество дней для показа в таблице: <input class="inline_elem" type="number" id="iframe_days" value="{{ config.iframe_days }}" min="1" max="366" onchange="unsaved()">
+                <p class="why inline_elem"
+                    data-tooltip="Количество дней отсчитывается с текущего дня. Пример: Если введено 3 дня и генерация будет в четверг, в итоговом документе будет расписание на четверг, пятницу и понедельник (если суббота не учебная, в противном случае будет расписание на четверг, пятницу и субботу).">(?)</p></p>
+        </div>
+        <div class="inline_elem cfg_elem">
+            <p class="inline_elem">Дополнительный header для iframe<p class="why inline_elem"
+                data-tooltip="То что будет записано в head для файла iframe">(?)</p></p>
+                <textarea rows='8' id="custom_head"
+                placeholder="table class:timetable - таблица с расписанием на день
+td class:table_item - таблица для одного класса
+div class:name - строка содержащая имя класса
+div class:lesson - строка содержащая урок" style="width: 100%;" oninput="this.style.height = '1px';this.style.height = `${this.scrollHeight}px`;">{{config.custom_iframe_head}}</textarea>
+        </div>
+    </div>
+    <div class="cfg_elem">
+        <h3 class="elem_title">Настройки группировки и отображения</h3>
+        <div class="inline_elem" style="vertical-align: top;">
+            <div class="cfg_elem">
+                <h3 class="elem_title">Отображение
+                    <p class="why inline_elem"
+                    data-tooltip="Для того, чтобы на панели выбора параллели (снизу) отображались кнопки выбора, внесите существующие параллели (группы) в список ниже. (Невнесенные в список группы не будут доступны для просмотра, но будут учитываться в составлении учительского расписания)">(?)</p></h3>
+                <p class="inline_elem">Какие параллели (группы) отображать: <input id="show" value="{% for val in config.show %}{{ val }};{% endfor %}" onchange="unsaved()">
+                    <p class="why inline_elem"
+                    data-tooltip="Параллели (группы) указываются через ';' (точка с запятой). Пример: 5;6;7;">(?)</p></p>
+            </div>
+            <div class="cfg_elem">
+                <h3 class="elem_title">Вторая смена
+                    <p class="why inline_elem"
+                    data-tooltip="Настройки отображения второй смены.">(?)</p></h3>
+                <p class="inline_elem">Сдвиг смены: <input id="second_shift_delay" type="number" value="{{ config.second_shift_delay }}" onchange="unsaved()">уроков.
+                    <p class="why inline_elem"
+                    data-tooltip="Сдвигом считается разница в уроках между началом первой смены и второй. Пример: Если первый урок второй смены начинается после 6 урока первой (7 урок), то в поле укажите 6. Если второй смены нет, оставьте значения по умолчанию.">(?)</p></p>
+                <p class="inline_elem">Параллели на второй смене: <input id="second_shift" value="{% for val in config.second_shift %}{{ val }};{% endfor %}" onchange="unsaved()">
+                    <p class="why inline_elem"
+                    data-tooltip="Параллели (группы) выведенные на вторую смену указываются через ';' (точка с запятой). Пример: 6;3;">(?)</p></p>
+            </div>
+        </div>
+        <div class="inline_elem" style="vertical-align: top;">
+            <div class="cfg_elem">
+                <h3 class="elem_title">Параллели (группы)
+                    <p class="why inline_elem"
+                    data-tooltip="Все классы в таблице разделяются на группы для отображения. Ниже вы можете принудительно разделить некоторые классы на группы (Если класс не распределен в какую-то группу, он будет автоматически распределен).">(?)</p></h3>
+                {% if config.groups %}
+                    <p class="inline_elem">Имя группы | классы
+                        <p class="why inline_elem"
+                        data-tooltip="Все классы разделяются ; (точка с запятой). Пример: Группа - 5 Классы - 5а;5б;5в;">(?)</p></p>
+                    {%- for group in config.groups -%}
+                        <div class="group_container">
+                            <input class="gr_name inline_elem" value="{{ group }}" onchange="unsaved()">
+                            <input class="gr_content inline_elem" value="{% for val in config.groups[group] %}{{ val }};{% endfor %}" onchange="unsaved()">
+                            <button onclick="remove_group(this)">X</button>
+                        </div>
+                    {%- endfor -%}
+                    <button onclick="add_group(this)">+</button>
+                {% else %}
+                    <button onclick="add_group(this)">+</button>
+                {% endif %}
+            </div>
+            <div class="cfg_elem">
+                <h3 class="elem_title">Вывод дней
+                    <p class="why inline_elem"
+                    data-tooltip="Выберите дни недели для показа (убедитесь что в таблице с расписанием эти дни указаны).">(?)</p></h3>
+                    <div id="days_container">
+                        {% if 'Пн' in config.days %}
+                            <p class="inline_elem">Пн: <input class="inline_elem day_check" type="checkbox" checked id="Пн" onchange="unsaved()"></p>
+                        {% else %}
+                            <p class="inline_elem">Пн: <input class="inline_elem day_check" type="checkbox" id="Пн" onchange="unsaved()"></p>
+                        {% endif %}
+                        {% if 'Вт' in config.days %}
+                            <p class="inline_elem">Вт: <input class="inline_elem day_check" type="checkbox" checked id="Вт" onchange="unsaved()"></p>
+                        {% else %}
+                            <p class="inline_elem">Вт: <input class="inline_elem day_check" type="checkbox" id="Вт" onchange="unsaved()"></p>
+                        {% endif %}
+                        {% if 'Ср' in config.days %}
+                            <p class="inline_elem">Ср: <input class="inline_elem day_check" type="checkbox" checked id="Ср" onchange="unsaved()"></p>
+                        {% else %}
+                            <p class="inline_elem">Ср: <input class="inline_elem day_check" type="checkbox" id="Ср" onchange="unsaved()"></p>
+                        {% endif %}
+                        {% if 'Чт' in config.days %}
+                            <p class="inline_elem">Чт: <input class="inline_elem day_check" type="checkbox" checked id="Чт" onchange="unsaved()"></p>
+                        {% else %}
+                            <p class="inline_elem">Чт: <input class="inline_elem day_check" type="checkbox" id="Чт" onchange="unsaved()"></p>
+                        {% endif %}
+                        {% if 'Пт' in config.days %}
+                            <p class="inline_elem">Пт: <input class="inline_elem day_check" type="checkbox" checked id="Пт" onchange="unsaved()"></p>
+                        {% else %}
+                            <p class="inline_elem">Пт: <input class="inline_elem day_check" type="checkbox" id="Пт" onchange="unsaved()"></p>
+                        {% endif %}
+                        {% if 'Сб' in config.days %}
+                            <p class="inline_elem">Сб: <input class="inline_elem day_check" type="checkbox" checked id="Сб" onchange="unsaved()"></p>
+                        {% else %}
+                            <p class="inline_elem">Сб: <input class="inline_elem day_check" type="checkbox" id="Сб" onchange="unsaved()"></p>
+                        {% endif %}
+                        {% if 'Вс' in config.days %}
+                            <p class="inline_elem">Вс: <input class="inline_elem day_check" type="checkbox" checked id="Вс" onchange="unsaved()"></p>
+                        {% else %}
+                            <p class="inline_elem">Вс: <input class="inline_elem day_check" type="checkbox" id="Вс" onchange="unsaved()"></p>
+                        {% endif %}
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="cfg_elem">
+        <h3 class="elem_title">Расписание звонков
+            <p class="why inline_elem"
+                data-tooltip="На основе этого расписания будут подсвечиваться текущие уроки и уроки которые начнуться после перемены. Если одно из полей (кроме комментария) было оставлено пустым, программа автоматически пропустит его. Если не будет заполнено ни одного поля, в расписании не будет отображаться кнопка для просмотра распиания звонков. Пример ввода: 1; 8:00; 8:40; Комментарий для перемены после урока (Пример: столовая начальная школа)">(?)</p></h3>
+        {%- for lsn in config.bells -%}
+            <div class="bells_container">
+                <input class="inline_elem lsn_num" value="{{ lsn }}" type="number" placeholder="Номер урока"  onchange="unsaved()">
+                <input class="inline_elem start_time" value="{{ config.bells[lsn][0] }}" placeholder="ЧЧ:ММ"  onchange="unsaved()"> - <input class="inline_elem end_time" value="{{ config.bells[lsn][1] }}" placeholder="ЧЧ:ММ" onchange="unsaved()">
+                {% if config.bells[lsn][2] == None %}
+                    <input class="inline_elem bell_comment" placeholder="Комментарий" onchange="unsaved()">
+                {% else %}
+                    <input class="inline_elem bell_comment" value="{{ config.bells[lsn][2] }}" placeholder="Комментарий" onchange="unsaved()">
+                {% endif %}
+                <button class="inline_elem" onclick="remove_group(this)">X</button>
+            </div>
+        {%- endfor -%}
+        <button onclick="add_bell(this)">+</button>
+    </div>
+    <div class="cfg_elem">
+        <h3 class="elem_title">Настройки преобразований
+            <p class="why inline_elem"
+                data-tooltip="Данные настройки предоставляют возможность програмно изменять написание урока, при этом не изменяя содержание таблицы. Также введенные названия уроков будут использоваться для подсказок во время заполнения таблицы в режиме web-редактора.">(?)</p></h3>
+        <div class="cfg_elem inline_elem">
+            <h3 class="elem_title">Расширенные названия
+                <p class="why inline_elem"
+                    data-tooltip="Названия, которые будут выводиться при нажатии на расписание класса. Пример: Мат - Математика (Слева - то, что указано в таблице с расписанием, справа, то, что будет выведено.)">(?)</p></h3>
+            {%- for orig in config.full -%}
+                <div class="full_container">
+                    <input class="inline_elem full_orig" value="{{ orig }}" onchange="unsaved()"> :
+                    <input class="inline_elem full_change" value="{{ config.full[orig] }}" onchange="unsaved()">
+                    <button class="inline_elem" onclick="remove_group(this)">X</button>
+                </div>
+            {%- endfor -%}
+            <button onclick="add_full(this)">+</button>
+        </div>
+        <div class="cfg_elem inline_elem">
+            <h3 class="elem_title">Сжатые названия
+                <p class="why inline_elem"
+                    data-tooltip="Названия, которые будут выводиться в общем виде (вид параллели) и в iframe. Пример: Литература - ЛИТ (Слева - то, что указано в таблице с расписанием, справа, то, что будет выведено.)">(?)</p></h3>
+            {%- for orig in config.short -%}
+                <div class="short_container">
+                    <input class="inline_elem short_orig" value="{{ orig }}" onchange="unsaved()"> :
+                    <input class="inline_elem short_change" value="{{ config.short[orig] }}" onchange="unsaved()">
+                    <button class="inline_elem" onclick="remove_group(this)">X</button>
+                </div>
+            {%- endfor -%}
+            <button onclick="add_short(this)">+</button>
+        </div>
+    </div>
+    <button id="save_btn" onclick="save_data()">Сохранить</button>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/config_manager.js') }}"></script>
+{% endblock %}

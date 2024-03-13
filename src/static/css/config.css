@@ -1,0 +1,247 @@
+.topbar ul {
+    position: fixed;
+    width: 100%;
+    right: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    background-color: #333;
+    height: 4.5vh;
+    max-height: 4.5vh;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+._li {
+    float: left;
+}
+
+.right{
+    float: right;
+}
+
+._li button {
+    display: inline-block;
+    color: white;
+    background: none;
+    border: none;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+._li button:hover {
+    background-color: #111;
+}
+
+#content {
+    position: absolute;
+    top: 5%;
+    left: 1.5%;
+    right: 1.5%;
+    height: 95%;
+    overflow-y: auto;
+}
+
+.cfg_elem {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    border-color: gray;
+    border-style: dashed;
+    vertical-align: top;
+    text-align: left;
+    font-family: 'Times New Roman';
+    font-size: 16px;
+}
+
+h3.elem_title {
+    font-weight: bold;
+}
+
+.inline_elem {
+    display: inline-block;
+}
+
+.p {
+    padding: none;
+}
+
+.why {
+    font-weight: bold;
+}
+
+[data-tooltip] {
+    position: relative; /* Относительное позиционирование */ 
+}
+[data-tooltip]::after {
+    content: attr(data-tooltip); /* Выводим текст */
+    position: absolute; /* Абсолютное позиционирование */
+    width: 35vw;
+    min-width: 300px;
+    max-width: 80vw; /* Ширина подсказки */
+    left: 0; top: 0; /* Положение подсказки */
+    background: #3989c9; /* Синий цвет фона */
+    color: #fff; /* Цвет текста */
+    padding: 0.5em; /* Поля вокруг текста */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Параметры тени */
+    pointer-events: none; /* Подсказка */
+    opacity: 0; /* Подсказка невидима */
+    transition: 0.2s; /* Время появления подсказки */
+} 
+[data-tooltip]:hover::after {
+    opacity: 1; /* Показываем подсказку */
+    top: 2em; /* Положение подсказки */
+}
+
+#save_btn {
+    position: fixed;
+    bottom: 2%;
+    right: 5%;
+    font-size: large;
+    padding: 1.5vh;
+    padding-inline: 1.5vw;
+    border-radius: 15px;
+    background-color: lightgreen;
+    color: black;
+    border-color: black;
+}
+
+#save_btn:hover {
+    background-color: rgb(110, 190, 110);
+}
+
+.popup__bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.1s all;
+}
+
+.popup__bg.active {
+    opacity: 1;
+    pointer-events: all;
+    transition: 0.1s all;
+}
+
+.popup {
+    position: absolute;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    background: rgb(255, 255, 255, 1.0);
+    font-size: 3vh;
+    width: 50vw;
+    min-width: 250px;
+    max-height: 75vh;
+    padding: 30px;
+    transition: 0.1s all;
+    border-radius: 15px;
+    overflow: auto;
+}
+
+.popup.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translate(-50%, -50%) scale(1);
+    transition: 0.1s all;
+}
+
+.in_popup {
+    font-size: 3vh;
+}
+
+.input_field_wrap {
+    width: 99%;
+    height: 15vh;
+    border-style: dashed;
+    border-color: black;
+    border-radius: 15px;
+    background-color: lightgray;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 25px;
+    font-weight: bold;
+    padding: none;
+    margin-bottom: 0.5vh;
+}
+
+#input_field_p {
+    position: relative;
+    top: -4em;
+    font-size: larger;
+    pointer-events:  none;
+}
+
+#file_input_field {
+    opacity: 1;
+    height: 100%;
+    width: 100%;
+}
+
+#file_submit_btn {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 15px;
+    background-color: lightgreen;
+    border: black;
+    border-radius: 15px;
+}
+
+#file_submit_btn:hover {
+    background-color: rgb(121, 201, 121);
+}
+
+.upload_success {
+    width: fit-content;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 15px;
+    background-color: lightgreen;
+    border: black dashed;
+    border-radius: 15px;
+}
+
+.upload_error {
+    width: fit-content;
+    max-width: 90%;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 15px;
+    background-color: lightcoral;
+    border: black dashed;
+    border-radius: 15px;
+}
+
+.iframe_gen_btn {
+    background-color: lightgray;
+    border: black;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: large;
+    font-weight: bold;
+}
+
+.iframe_gen_btn:hover {
+    background-color: rgb(168, 168, 168);
+}
+
+.tool-btn {
+    padding: 15px;
+    background-color: whitesmoke;
+    border-color: black;
+    border-radius: 15px;
+    margin-inline: 6px;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.tool-btn:hover {
+    background-color: rgb(143, 143, 143);
+}

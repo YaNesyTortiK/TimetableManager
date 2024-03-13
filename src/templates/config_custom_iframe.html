@@ -1,0 +1,30 @@
+{% extends "config_base.html" %}
+{% block title %}
+Custom Iframe
+{% endblock %}
+{% block content %}
+    {% if not config.is_setup %}
+        <h1>Внимание вы не можете использовать эту функцию, сервер не настроен. <a href="/config/">Перейти к настройке</a></h1>
+    {% else %}
+        <div class="cfg_elem">
+            <h3 class="elem_title">Настройки генерации</h3>
+            <p class="inline_elem">Количество дней в таблице: <input type="number" id="days" value="{{ config.iframe_days }}" min="1" max="366">
+                <p class="why inline_elem"
+                data-tooltip="Количество отображаемых дней учитывая сегодняшний день. Пример: Кол-во дней: 3, сегодня: Вторник, следовательно таблица сгенерируется с расписанием на Вторник, Среду и Четверг. Если параметр пропуск дней больше 0, тогда отсчет пойдет с того дня, на который переведен пропуск дней. Пример: Кол-во дней: 2, сегодня: вторник, пропуск дней: 1, следовательно будет сгенерировано расписание на Среду и Четверг.">(?)</p></p>
+            <p>Количество столбцов в таблице: <input type="number" id="columns" value="{{ config.iframe_columns }}" min="1"></p>
+            <p class="inline_elem">Пропуск дней: <input type="number" id="skip" value="0" min="0" max="366">
+                <p class="why inline_elem"
+                data-tooltip="Сколько дней пропустить считая от сегодняшнего. Пример: сегодня: вторник, пропуск: 2, следовательно в таблице первым днем будет Четверг.">(?)</p></p>
+        </div>
+        <div class="cfg_elem">
+            {% if config.save_iframe %}
+                <button class="inline_elem iframe_gen_btn" onclick="gen_n_save()">Сгенерировать и сохранить iframe</button>
+            {% endif %}
+            <button class="inline_elem iframe_gen_btn" onclick="gen()">Сгенерировать iframe</button>
+            <button class="inline_elem iframe_gen_btn" onclick="download()">Скачать iframe</button>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/custom_iframe.js') }}"></script>
+{% endblock %}

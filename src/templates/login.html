@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <title>Войти в систему</title>
+  </head>
+  <body>
+    <div class="login_container">
+        <div class="login_container_inner">
+            {% if not_valid %}
+                <p class="invalid_form_data">Неверное имя пользователя или пароль!</p>
+            {% endif %}
+            <form class="login_form" action="/login/" method="POST">
+                <div class="form_element">
+                    <div class="form_element_title">Пользователь:</div>
+                    <input class="form_element_input" type="text" name="handle" required autocomplete="on">
+                </div>
+                <div class="form_element">
+                    <div class="form_element_title">Пароль:</div>
+                    <input class="form_element_input" type="password" name="password" required autocomplete="on">
+                </div>
+                <div class="form_element">
+                    <input class="from_submit" type="submit" value="Войти">
+                </div>
+            </form>
+        </div>
+    </div>
+  </body>
+</html>

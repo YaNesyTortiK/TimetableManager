@@ -62,8 +62,8 @@ class Config:
         'name': 'Timetable Manager',
         'version': '1.2.7',
         'modification': 'Stable',
-        'saved': '13.03.2024 15:59 UTC+3',
-        'contact_info': 'https://github.com/YaNesyTortiK'
+        'saved': '23.03.2024 23:41 UTC+3',
+        'contact_info': 'https://github.com/YaNesyTortiK/TimetableManager'
     }
 
     def __init__(self, file: str) -> None:

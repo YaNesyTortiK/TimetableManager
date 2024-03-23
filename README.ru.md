@@ -351,3 +351,23 @@ iframe - встраиваемый html документ. Используетс�
 ### Установка "режима киоска" для Windows (рекомендуется для интерактивных/сенсорных панелей)
 Обратите внимание, что не на всех версиях Windows это возможно сделать.
 Подробную инструкцию по созданию учетной записи режима киоска вы можете найти на [официальной странице microsoft](https://learn.microsoft.com/ru-ru/windows/configuration/assigned-access/quickstart-kiosk?tabs=settings)
+
+## License
+Timetable Manager. Web-server to manage, store and distribute timetable on local network with simple and easy to understand design.
+
+Copyright (C) 2024  YaNesyTortik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact info: github.com/YaNesyTortik/TimetableManager

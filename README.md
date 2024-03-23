@@ -358,3 +358,22 @@ When clicked, all unused tables are deleted.
 ### Setting "kiosk mode" for Windows (recommended for interactive/touch panels)
 Please note that this may not be possible on all versions of Windows.
 Detailed instructions for creating a kiosk mode account can be found on [the official microsoft page](https://learn.microsoft.com/en-en/windows/configuration/assigned-access/quickstart-kiosk?tabs=settings)
+
+## License
+Timetable Manager. Web-server to manage, store and distribute timetable on local network with simple and easy to understand design. 
+Copyright (C) 2024  YaNesyTortik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact info: github.com/YaNesyTortik/TimetableManager

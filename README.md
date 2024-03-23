@@ -255,7 +255,7 @@ iframe - embedded html document. Used to embed schedules on external sites. You 
 4. Вывод дней - which days will be displayed (default: Пн, Вт, Ср, Чт, Пт (English: Mon, Tue, Wed, Thu, Fri )). **These names must exactly match what is in the table**
 
 ### Bells Settings
-![BellsSettings](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/BellSettings.png?raw=true)
+![BellsSettings](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/BellsSettings.png?raw=true)
 If a bell schedule is added, a bell button is added to the class selection menu; when clicked, the schedule is displayed. The program also highlights the next lesson for the current day or the current lesson.
 To add a lesson to the schedule, click "+", to delete "X"
 

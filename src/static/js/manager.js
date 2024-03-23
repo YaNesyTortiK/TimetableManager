@@ -72,7 +72,9 @@ function overlay(elem) {
                     popup = popupBg.children[0];
                     popupBg.classList.add('active');
                     popup.classList.add('active');
-                    highlight_lesson_in_popup(o_day_num);
+                    if (typeof(bells) !== "undefined") {
+                        highlight_lesson_in_popup(o_day_num);
+                    }
                 })
             } else {
                 response.text().then(error=>{

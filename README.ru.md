@@ -352,7 +352,7 @@ iframe - встраиваемый html документ. Используетс�
 Обратите внимание, что не на всех версиях Windows это возможно сделать.
 Подробную инструкцию по созданию учетной записи режима киоска вы можете найти на [официальной странице microsoft](https://learn.microsoft.com/ru-ru/windows/configuration/assigned-access/quickstart-kiosk?tabs=settings)
 
-## License
+## Лицензия
 Timetable Manager. Web-server to manage, store and distribute timetable on local network with simple and easy to understand design.
 
 Copyright (C) 2024  YaNesyTortik

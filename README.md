@@ -75,13 +75,13 @@ sudo systemctl enable docker
 ```
 7. Check the installation
 ```
-docker run hello-world
+sudo docker run hello-world
 ```
 This command will install a test image and run it in a docker container. If there are no errors during the startup process and you see a welcome message from Docker, then the installation was successful.
 
 8. Download and start docker image
 ```
-docker run -d --name=TimetableManager -p 80:5000 --restart unless-stopped ghcr.io/yanesytortik/timetable-manager:latest
+sudo docker run -d --name=TimetableManager -p 80:5000 --restart unless-stopped ghcr.io/yanesytortik/timetable-manager:latest
 ```
 After the image is downloaded and launched, you can [go to page](http://127.0.0.1). f everything was successful, a web page should load that says `Ошибка соединения: Internal server Error. Something happened during getting data. Error: Сервер настроен неправильно или не настроен. Свяжитесь с системным администратором`. After this, you can proceed to [initial server setup](#initial-setup)
 ![InitialCfgRequired](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/InitialCfgRequired.png?raw=true)
@@ -195,11 +195,11 @@ After this, you can go to the address [127.0.0.1:5000](127.0.0.1:5000) and check
 2. Reboot the server. Required after the initial setup; then a reboot is required if any settings are not applied automatically. If you are using docker use the following commands:
     - List running applications
     ```
-    docker ps 
+    sudo docker ps 
     ```
     - Restart the application using its container id (first 3 characters) (Example `fe2`)
     ```
-    docker restart <id>
+    sudo docker restart <id>
     ```
 
 # Settings

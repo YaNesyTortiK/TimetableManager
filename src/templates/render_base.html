@@ -1,4 +1,10 @@
-<!DOCTYPE html><html lang="ru"><head><link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">{% block head %}<meta charset="utf-8"><link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"><link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet" type="text/css"><title>{% block title %}{% endblock %}</title>{% endblock %} {% block additional_head %} {% endblock %}</head><body><div id="topbar">{% block topbar %}<div class="clockpage"><span id="clock"></span><span id="dayOfWeek"></span><span class="month"></span>&nbsp;<span class="day" onclick="get_info()"></span>&nbsp;<span class="year"></span></div>{% endblock %}</div><div id="content">{% block content %}{% endblock %}</div><div id="footer">{% block footer %} SMTH {% endblock %}</div><script type="text/javascript" src="{{ url_for('static', filename='js/clocks.js') }}"></script>{% block scripts %} {% endblock %}</body>
+<!DOCTYPE html><html lang="ru"><head><link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">{% block head %}<meta charset="utf-8">
+    {% if is_mobile %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/index_mobile.css') }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    {% endif %}
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet" type="text/css"><title>{% block title %}{% endblock %}</title>{% endblock %} {% block additional_head %} {% endblock %}</head><body><div id="topbar">{% block topbar %}<div class="clockpage"><span id="clock"></span><span id="dayOfWeek"></span><span class="month"></span>&nbsp;<span class="day" onclick="get_info()"></span>&nbsp;<span class="year"></span></div>{% endblock %}</div><div id="content">{% block content %}{% endblock %}</div><div id="footer">{% block footer %} SMTH {% endblock %}</div><script type="text/javascript" src="{{ url_for('static', filename='js/clocks.js') }}"></script>{% block scripts %} {% endblock %}</body>
 <div style="display: none;" id="program_info">
 Program name: {{ config.program_info.name }}<br>
 Program version: {{ config.program_info.version }}<br>

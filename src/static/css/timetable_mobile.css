@@ -1,0 +1,136 @@
+#timetable_container {
+    top: 5%;
+    left: 10%;
+    position: fixed;
+    justify-content: center;
+    height: 100%;
+    width: 90%;
+    overflow: auto;
+}
+
+#global_timetable {
+    background: none;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    left: -1em;
+    height: 100%;
+    font-family: 'Times New Roman';
+    font-size: 1.2vh;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+#global_timetable td {
+    background-color: rgb(255, 255, 255, 0.7);
+    border: 1px solid gray;
+    vertical-align: middle;
+}
+
+#global_timetable th {
+    border: 1px solid rgb(103, 182, 247);
+    background-color: #0B9CB2;
+}
+
+.inner_timetable {
+    display: block;
+    height: 100%;
+    padding-bottom: 5px;
+    font-size: 1.5vh;
+}   
+
+.inner_timetable td {
+    background: none;
+    border: 1px solid gray;
+    vertical-align: middle;
+    margin-top: 1vh;
+}
+
+.inner_timetable td.lesson_num {
+    min-width: 7px;
+    width: 7px;
+    text-align: center;
+}
+
+.inner_timetable td.lesson_val {
+    width: 100%;
+    min-width: 100%;
+}
+
+.inner_timetable td.padded {
+    padding-left: 10px;
+}
+
+.inner_timetable td {
+    background: none;
+    border: 1px solid gray;
+    vertical-align: middle;
+}
+
+
+.overlay_button {
+    background: none;
+    border: none;
+    padding: none;
+    margin: none;
+}
+
+.klass_title {
+    text-align: center;
+}
+
+.in_popup {
+    font-size: 3vh;
+}
+
+.teacher_inner_timetable {
+    width: 500px;
+}
+
+
+.teacher_inner_timetable_button {
+    background: none;
+    border: none;
+}
+
+.teacher_inner_timetable_button:hover {
+    background: none;
+    border: none;
+}
+
+.teacher_inner_timetable {
+    background: none;
+    display: block;
+    height: 100%;
+    padding: none;
+    margin: none;
+    font-size: 1.3vh;
+}
+
+.teacher_inner_timetable td {
+    background: none;
+    border: 0.5px dashed rgb(165, 165, 165);
+    min-width: 50px;
+    width: 100%;
+}
+
+.teacher_inner_timetable td.lesson_num {
+    min-width: 7px;
+    width: 7px;
+}
+
+.teacher_inner_timetable td.lesson_val {
+    padding-left: 10px;
+}
+
+.next_lesson {
+    background-color: rgb(255, 165, 0, 0.3);
+}
+
+.ongoing_lesson {
+    background-color: rgb(166, 255, 0, 0.3);
+}
+
+.inline_element {
+    display: inline-block;
+}

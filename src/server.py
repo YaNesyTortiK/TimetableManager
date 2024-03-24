@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort, session, url_for, send_file, send_from_directory
+from flask import Flask, render_template, redirect, request, abort, send_file
 import flask_login
 import os.path
 import uuid
@@ -103,9 +103,12 @@ def unauthorized_handler():
 
 # End of login setup ^^^
 
+# Custom implementation of checking is mobile platform is used (because Flask3.x broke good implementation of Flask-Mobility)
+@app.context_processor 
+def utility_processor():
+    return dict(is_mobile=True if re.match(r'.*Android.*|.*webOS.*|.*iPhone.*|.*iPad.*|.*iPod.*|.*BlackBerry.*|.*IEMobile.*|.*Opera Mini.*', request.headers.get('User-Agent')) else False)
 
 # Render part vvv
-
 @app.route('/')
 def index():
     storage_data = storage.data

@@ -1,7 +1,7 @@
 # Timetable Manager
 ## Note
 **Currently the program only supports Russian**
-[Перейти на русский](https://github.com/YaNesyTortiK/TimetableManager/blob/main/README.ru.md)
+[Перейти на русский](https://github.com/YaNesyTortiK/TimetableManager/blob/main/README.ru-RU.md)
 
 * [About](#about)
 * [Download and run](#download-and-run)

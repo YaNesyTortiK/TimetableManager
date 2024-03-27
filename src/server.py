@@ -285,7 +285,7 @@ def upload():
         log(f'Файл "{config.directory+file.filename}" загружен.')
         update_res = storage.update_data()
         if update_res[1]:
-            return render_template('config_upload.html', program_info=config.program_info, config=config, error=f'Произошла ошибка при обновлении данных. Ошибка: {update_res}')
+            return render_template('config_upload.html', program_info=config.program_info, config=config, error=f'Произошла ошибка при обновлении данных. Ошибка: {update_res[0]}')
         else:
             return render_template('config_upload.html', program_info=config.program_info, config=config, uploaded=True)
     except Exception as ex:

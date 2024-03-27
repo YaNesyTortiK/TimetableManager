@@ -80,7 +80,7 @@ function check_ongoing() {
       if (lsn_start_h <= hour && lsn_end_h >= hour) {
         if (lsn_start_h !== lsn_end_h) {
           if ((hour == lsn_end_h && minute < lsn_end_m) || (hour == lsn_start_h && minute >= lsn_start_m)) {
-            console.log('FIND 1', lsn, bells[lsn])
+            // console.log('FIND 1', lsn, bells[lsn])
             current_lesson = [Number(lsn), true, day_num];
             highlight_lesson(Number(lsn), day_num, true);
             highlight_lesson_in_popup(day_num);
@@ -89,7 +89,7 @@ function check_ongoing() {
           }
         } else {
           if (lsn_start_m <= minute && minute < lsn_end_m) {
-            console.log('FIND 2', lsn, bells[lsn])
+            // console.log('FIND 2', lsn, bells[lsn])
             current_lesson = [Number(lsn), true, day_num];
             highlight_lesson(Number(lsn), day_num, true);
             highlight_lesson_in_popup(day_num);;
@@ -109,14 +109,14 @@ function check_ongoing() {
         let lsn_end_m = Number(temp[1]);
 
         if (lsn_start_h > hour) {
-          console.log('FIND 3', lsn, bells[lsn])
+          // console.log('FIND 3', lsn, bells[lsn])
           current_lesson = [Number(lsn), false, day_num];
           highlight_lesson(Number(lsn), day_num, false);
           highlight_lesson_in_popup(day_num);
           cur = true;
           break;
         } else if (lsn_start_h == hour && lsn_start_m > minute) {
-          console.log('FIND 4', lsn, bells[lsn])
+          // console.log('FIND 4', lsn, bells[lsn])
           current_lesson = [Number(lsn), false, day_num];
           highlight_lesson(Number(lsn), day_num, false);
           highlight_lesson_in_popup(day_num);

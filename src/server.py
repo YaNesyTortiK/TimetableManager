@@ -93,7 +93,7 @@ def login():
 @app.route('/logout/')
 @flask_login.login_required
 def logout():
-    log(f"Пользователь \"{flask_login.current_user}\" вышел из системы")
+    log(f"Пользователь \"{flask_login.current_user.id}\" вышел из системы")
     flask_login.logout_user()
     return redirect('/')
 

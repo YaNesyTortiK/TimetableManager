@@ -246,10 +246,10 @@ function show_bells() {
 function highlight_lesson_in_popup() {
     let tbl = document.getElementsByClassName('in_popup')[0];
     let o_day_num = weekdays.indexOf(tbl.getAttribute('day_num'));
-
+    if (typeof(current_lesson) === "undefined")
+        return;
     if (o_day_num != current_lesson[2])
         return;
-
     if (!tbl.parentElement.classList.contains('active'))
         return;
     for (lsn of tbl.getElementsByTagName('tr')) {
@@ -264,6 +264,48 @@ function highlight_lesson_in_popup() {
         } else {
             lsn.classList.remove('ongoing_lesson')
             lsn.classList.remove('next_lesson')
+        }
+    }
+}
+
+function clean_highlight(day_num) {
+    let rasp_cells = undefined;
+    // ckean highlight on bells timetable
+    rasp_cells = document.getElementsByClassName('bells_table_inner')
+    for (elem in rasp_cells) {
+        if (typeof(rasp_cells[elem]) !== 'object')
+            break
+        let lesson_cells = rasp_cells[elem].getElementsByClassName('__lesson_cell')
+        for (lesson in lesson_cells) {
+            if (typeof(lesson_cells[lesson]) !== 'object')
+                break
+            lesson_cells[lesson].classList.remove('next_lesson');
+            lesson_cells[lesson].classList.remove('ongoing_lesson'); 
+        }
+    }
+    // clean highlights in body
+    let row = timetable_container.getElementsByTagName('tbody')[0]
+    if (typeof(row) == 'undefined') {
+        return;
+    }
+    row = row.getElementsByClassName('row');
+    if (typeof(row) == 'undefined') {
+        return;
+    }
+    row = row[day_num]
+    if (typeof(row) == 'undefined') {
+        return;
+    }
+    rasp_cells = row.getElementsByClassName("__rasp_cell")
+    for (elem in rasp_cells) {
+        if (typeof(rasp_cells[elem]) !== 'object')
+            break
+        let lesson_cells = rasp_cells[elem].getElementsByClassName('__lesson_cell')
+        for (lesson in lesson_cells) {
+            if (typeof(lesson_cells[lesson]) !== 'object')
+                break
+            lesson_cells[lesson].classList.remove('next_lesson');
+            lesson_cells[lesson].classList.remove('ongoing_lesson');
         }
     }
 }

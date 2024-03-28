@@ -62,7 +62,7 @@ class Config:
         'name': 'Timetable Manager',
         'version': '1.2.8',
         'modification': 'Stable',
-        'saved': '24.03.2024 18:26 UTC+3',
+        'saved': '28.03.2024 16:55 UTC+3',
         'contact_info': 'https://github.com/YaNesyTortiK/TimetableManager'
     }
 

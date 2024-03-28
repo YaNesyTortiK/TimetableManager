@@ -56,11 +56,6 @@ function clockTimer() {
   setTimeout("clockTimer()", 1000);
 }
 
-function minute_timer() {
-  check_ongoing();
-  setTimeout("minute_timer()", 15000); // 15 seconds is set to update highlight faster
-}
-
 function check_ongoing() {
   if (typeof(bells) !== "undefined") {
     let date = new Date();
@@ -125,12 +120,17 @@ function check_ongoing() {
         }
       }
     }
+    if (!cur) {
+      clean_highlight(day_num);
+    }
   }
 }
 
 function start() {
   clockTimer();
-  minute_timer();
+  setInterval(() => {
+    check_ongoing();
+  }, 15000);
 }
 
 document.onload = start();

@@ -1,6 +1,6 @@
 # Timetable Manager
 ## Note
-**Currently the program only supports Russian**
+**Currently the program only supports Russian language as the language of interface**
 [Перейти на русский](https://github.com/YaNesyTortiK/TimetableManager/blob/main/README.ru-RU.md)
 
 * [About](#about)
@@ -31,6 +31,7 @@
         - [Create custom function](#create-a-custom-function)
         - [Remove custom function](#remove-custom-function)
         - [Delete old timetable files](#delete-old-schedule-files)
+    - [Information](#information)
 * [Usage](#using-the-program-in-schedule-display-mode)
     - [Overview](#overview)
     - [Kiosk mode](#setting-kiosk-mode-for-windows-recommended-for-interactivetouch-panels)
@@ -341,6 +342,12 @@ When clicked, a page with buttons will open. When you click the button, the corr
 (Available only if there are at least two files in the directory with tables)
 When clicked, all unused tables are deleted.
 (The table used is the table with the larger date in the file name)
+
+## Information
+- Github репозиторий - link to this repo (https://github.com/YaNesyTortiK/TimetableManager)
+- Документация - link to the README on russian
+- Сообщить об ошибке - link to issues page on this repo
+- Информация о сервере - will show basic info about program (Name, version, modification, when version saved, contact info)
 
 # Using the program in schedule display mode
 ### Overview

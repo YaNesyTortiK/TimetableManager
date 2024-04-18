@@ -14,6 +14,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from src.tools.storage import Storage, get_filenames
 from src.tools.config_parser import Config
 from src.tools.logger import Logger
+from src.tools.tools import render_jinja
 
 ROOT_DIR = os.path.dirname(
     os.path.dirname(
@@ -40,12 +41,11 @@ log('Запуск сервера')
 def periodic_task():
     storage.update_data()
     if config.save_iframe:
-        with app.app_context():
-            r = save_iframe()
-            if r[1] == 200:
-                log.info(f'Асинхронное сохранение iframe: {r[0]}')
-            else:
-                log.warning(f'Асинхронное сохранение iframe: {r[0]}')
+        r = save_iframe()
+        if r[1] == 200:
+            log.info(f'Асинхронное сохранение iframe: {r[0]}')
+        else:
+            log.warning(f'Асинхронное сохранение iframe: {r[0]}')
 
 if config.lifetime > 0:
     scheduler = BackgroundScheduler()
@@ -186,7 +186,7 @@ def generate_iframe(days: int = config.iframe_days, columns: int = config.iframe
             return f'Something went wrong during generating iframe. Exception: {ex}', 500
         else:
             raise ex
-    return render_template('render_iframe.html', data=data, config=config, time=datetime.now())
+    return render_jinja('src/templates', 'render_iframe.html', data=data, config=config, time=datetime.now())
 
 @app.route('/download_iframe/')
 @app.route('/download_iframe/<int:days>/')

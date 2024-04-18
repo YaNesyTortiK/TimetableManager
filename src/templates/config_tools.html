@@ -21,3 +21,10 @@
         <button class="tool-btn" onclick="window.location.replace('/cfg_remove_old_files/')">Удалить старые файлы с расписанием (Всего: {{ del_files | length -1 }})</button>
     {% endif %}
 </div>
+<div class="cfg_elem">
+    <h3 class="elem_title">Информация</h3>
+    <a href="https://github.com/YaNesyTortiK/TimetableManager"><button class="tool-btn">Github репозиторий</button></a>
+    <a href="https://github.com/YaNesyTortiK/TimetableManager/blob/main/README.ru-RU.md"><button class="tool-btn">Документация</button></a>
+    <a href="https://github.com/YaNesyTortiK/TimetableManager/issues"><button class="tool-btn">Сообщить об ошибке</button></a>
+    <button class="tool-btn" onclick="popup_container.innerHTML = '<div class=\'popup__bg\' onclick=\'close_popup(this)\'><div class=\'popup\'><h2 class=\'klass_title\'>Информация о сервере</h2>'+document.getElementById('program_info').innerHTML+'</div></div>';popupBg = popup_container.children[0];popup = popupBg.children[0];popupBg.classList.add('active');popup.classList.add('active');">Информация о сервере</button>
+</div>

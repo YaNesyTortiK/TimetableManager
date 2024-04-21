@@ -25,14 +25,36 @@ function isNumeric(n) {
 }
 
 function remove_group(elem) {
-    const to_rem = elem.parentElement
-    to_rem.parentElement.removeChild(to_rem)
+    elem.parentElement.parentElement.removeChild(elem.parentElement)
 }
 
 function add_group(elem) {
     const par = elem.parentElement
     par.removeChild(elem)
     par.insertAdjacentHTML('beforeend', `<div class="group_container"><input class="gr_name inline_elem""> <input class="gr_content inline_elem"> <button onclick="remove_group(this)">X</button></div><button onclick="add_group(this)">+</button>`)
+}
+
+function add_bells_group(elem) {
+    const par = elem.parentElement
+    par.removeChild(elem)
+    par.removeChild(par.getElementsByClassName('splitter')[0])
+    par.insertAdjacentHTML('beforeend', `
+    <div class="cfg_elem inline_elem bells_group_container">
+        <label>Расписание на: </label> 
+        <select name="inp_type" class="bells_inp_type inline_elem" onchange="bells_inp_type(this)">
+            <option value="*">Все дни</option>
+            <option value="weekday">День недели</option>
+            <option value="date">Дата</option>
+        </select>
+        <div class="bells_inp_param"></div>
+        <button onclick="remove_group(this)">Удалить группу</button>
+        <hr>
+        <button onclick="add_bell(this)" class="inline_elem">+</button>
+    </div>
+    <div class="splitter"></div>
+    <button onclick="add_bells_group(this)">Добавить группу</button>
+    `)
+
 }
 
 function add_full(elem) {
@@ -123,44 +145,61 @@ function add_bell(elem) {
 }
 
 function get_bells() {
-    let data = {}
-    for (container of document.getElementsByClassName("bells_container")) {
-        let num = container.getElementsByClassName("lsn_num")[0].value.trim()
-        let start_time = container.getElementsByClassName("start_time")[0].value.trim()
-        let end_time = container.getElementsByClassName("end_time")[0].value.trim()
-        let comment = container.getElementsByClassName("bell_comment")[0].value.trim()
-        if (num == '' || !isNumeric(num) || start_time == '' || end_time == '') {
-            continue
+    let res = []
+    for (group of document.getElementsByClassName('bells_group_container')) {
+        let inp_type = group.getElementsByClassName('bells_inp_type')[0].value
+        let inp_value_container = group.getElementsByClassName('bells_inp_value')[0]
+        let options = null
+        if (inp_type === 'weekday') {
+            options = []
+            for (day_check of inp_value_container.getElementsByClassName('day_check')) {
+                if (day_check.checked) {
+                    options.push(day_check.id)
+                }
+            }
+        } else if (inp_type == 'date') {
+            options = inp_value_container.value
         }
-        if (!start_time.includes(':')) {
-            if (start_time.includes('.'))
-                start_time = start_time.replace('.', ':');
-            else if (start_time.includes('-'))
-                start_time = start_time.replace('-', ':');
-            else
-                continue;
+        data = {'type': inp_type, 'options': options}
+        for (container of group.getElementsByClassName("bells_container")) {
+            let num = group.getElementsByClassName("lsn_num")[0].value.trim()
+            let start_time = group.getElementsByClassName("start_time")[0].value.trim()
+            let end_time = group.getElementsByClassName("end_time")[0].value.trim()
+            let comment = group.getElementsByClassName("bell_comment")[0].value.trim()
+            if (num == '' || !isNumeric(num) || start_time == '' || end_time == '') {
+                continue
+            }
+            if (!start_time.includes(':')) {
+                if (start_time.includes('.'))
+                    start_time = start_time.replace('.', ':');
+                else if (start_time.includes('-'))
+                    start_time = start_time.replace('-', ':');
+                else
+                    continue;
+            }
+            if (!end_time.includes(':')) {
+                if (end_time.includes('.'))
+                    end_time = end_time.replace('.', ':');
+                else if (end_time.includes('-'))
+                    end_time = end_time.replace('-', ':');
+                else
+                    continue;
+            }
+            let temp = start_time.split(':')
+            if (!isNumeric(temp[0]) || !isNumeric(temp[1]))
+                continue
+            temp = end_time.split(':')
+            if (!isNumeric(temp[0]) || !isNumeric(temp[1]))
+                continue
+    
+            if (comment == '')
+                comment = null
+    
+            data[num] = [start_time, end_time, comment];
         }
-        if (!end_time.includes(':')) {
-            if (end_time.includes('.'))
-                end_time = end_time.replace('.', ':');
-            else if (end_time.includes('-'))
-                end_time = end_time.replace('-', ':');
-            else
-                continue;
-        }
-        let temp = start_time.split(':')
-        if (!isNumeric(temp[0]) || !isNumeric(temp[1]))
-            continue
-        temp = end_time.split(':')
-        if (!isNumeric(temp[0]) || !isNumeric(temp[1]))
-            continue
-
-        if (comment == '')
-            comment = null
-
-        data[num] = [start_time, end_time, comment];
+        res.push(data)
     }
-    return data;
+    return res;
 }
 
 
@@ -245,4 +284,31 @@ function unsaved() {
 
 function saved() {
     window.onbeforeunload = null;
+}
+
+function bells_inp_type(elem) {
+    val = elem.value
+    inp_param_container = elem.parentElement.getElementsByClassName('bells_inp_param')[0]
+    if (val == '*') {
+        inp_param_container.innerHTML = ''
+    } else if (val == 'weekday') {
+        inp_param_container.innerHTML = `
+        <label>Выберите дни недели:</label>
+        <div class="bells_inp_value inline_elem">
+            <p class="inline_elem">Пн:<input class="inline_elem day_check" type="checkbox" id="Пн" onchange="unsaved()"> |</p>
+            <p class="inline_elem">Вт:<input class="inline_elem day_check" type="checkbox" id="Вт" onchange="unsaved()"> |</p>
+            <p class="inline_elem">Ср:<input class="inline_elem day_check" type="checkbox" id="Ср" onchange="unsaved()"> |</p>
+            <p class="inline_elem">Чт:<input class="inline_elem day_check" type="checkbox" id="Чт" onchange="unsaved()"> |</p>
+            <p class="inline_elem">Пт:<input class="inline_elem day_check" type="checkbox" id="Пт" onchange="unsaved()"> |</p>
+            <p class="inline_elem">Сб:<input class="inline_elem day_check" type="checkbox" id="Сб" onchange="unsaved()"> |</p>
+            <p class="inline_elem">Вс:<input class="inline_elem day_check" type="checkbox" id="Вс" onchange="unsaved()"></p>
+        </div>
+        `
+    } else if (val == 'date') {
+        inp_param_container.innerHTML = `
+        <label>Укажите дату: </label>
+        <input class="bells_inp_value" type="date">
+        <p><b>Обратите внимание</b>, расписание на дату будет в приоритете, даже если есть расписание на день недели или на все дни.</p>
+        `
+    }
 }

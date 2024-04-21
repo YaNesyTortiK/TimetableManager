@@ -257,16 +257,32 @@ iframe - embedded html document. Used to embed schedules on external sites. You 
 
 ### Bells Settings
 ![BellsSettings](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/BellsSettings.png?raw=true)
+
 If a bell schedule is added, a bell button is added to the class selection menu; when clicked, the schedule is displayed. The program also highlights the next lesson for the current day or the current lesson.
+
+By default, calls are not installed. To add a call schedule, click on the "Add group" button. An element with the following settings will appear:
+
+- Расписание на - (Schedule for) what type of schedule is installed (by default - all days). Allows you to set different schedules for days of the week and specific dates.
+- Удалить группу - (Delete group) permanently deletes the group.
+- Выберите день недели (if the “day of the week” schedule is selected) - (Select the day of the week) indicate the days of the week for which the schedule will be valid.
+- Укажите дату (if the schedule for “date” is selected) - specify the date (by clicking on the element and selecting the day in the calendar) for which the schedule will be applied.
+
+Below (under the separating line) you can create a schedule.
 To add a lesson to the schedule, click "+", to delete "X"
 
 Forms to fill out:
-* Номер урока - Lesson number
-* Начало урока - Start of lesson - Hour: Minute (in 24 hour format. Example: 08:05)
-* Конец урока - End of lesson - Hour: Minute (in 24 hour format. Example: 09:45)
+* Lesson number
+* Start of lesson - Hour: Minute (in 24 hour format. Example: 08:05)
+* End of lesson - Hour: Minute (in 24 hour format. Example: 09:45)
 * Комментарий - comment on the break after the lesson (Example: Dining room)
 
 For the second shift schedule, continue counting from the first lesson of the second shift. (Example: shift shift - 6 lessons, in this case for the first lesson of the second shift use the number "7")
+
+Schedule priority:
+- Higher (always used if available) - schedule for the date.
+- Medium (used if there is no schedule for the date) - schedule for the day of the week.
+- Lowest (used if there is no schedule for a date or day of the week) - all days.
+- Absent (if the schedule is not specified) - the “Звонки” button will be absent on the bottom panel and the next and current lessons will not be highlighted.
 
 ### Mutation Settings
 ![MutationSettings](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/MutationSettings.png?raw=true)

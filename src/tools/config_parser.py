@@ -45,13 +45,15 @@ class Config:
         #   "cmd": Команда которая будет запущена по нажатию на кнопку.   
         #   }
     }
-    bells = { # Расписание звонков для подсветки текущего (следующего после перемены) урока
-        # номер урока: [начало урока, конец урока, доп.информация о перемене после урока]
-        # Пример: 
-        # "1": ["8:00", "8:40", None],
-        # "2": ["8:50", "9:30", "Завтрак 1-е классы"]
-        # Если словарь пустой, никакие уроки подсвечиваться не будут
-    }
+    bells = [ # Расписание звонков для подсветки текущего (следующего после перемены) урока
+        # {
+        #    "type": Тип расписания (all - все дни, weekday - день недели, date - дата)
+        #    "options": Дополнительная информация для парсера (['Пн', 'Вт', ...] - для дней недели, '2020-01-01' - для даты, None - для всех дней)
+        #    "1": ['08:00', '08:40', None] - Информация о уроке ([начало, конец, комментарий (None если нет)])
+        #    ...
+        # },
+        # ...
+    ]
     log_filename = 'log.txt' # Файл для записи логов
     log_to_console = False # Писать логи в консоль
     funfunct = True
@@ -60,9 +62,9 @@ class Config:
 
     program_info = {
         'name': 'Timetable Manager',
-        'version': '1.2.9',
+        'version': '1.3.0',
         'modification': 'Stable',
-        'saved': '18.04.2024 16:55 UTC+3',
+        'saved': '21.04.2024 20:11 UTC+3',
         'contact_info': 'https://github.com/YaNesyTortiK/TimetableManager'
     }
 
@@ -81,8 +83,6 @@ class Config:
 
     def write_config_from_dict(self, data):
         for key, value in data.items():
-            if key == 'custom_iframe_head':
-                print('CCC', value)
             if key not in ['password', 'username', 'program_info', 'custom_functions'] and value != None:
                 if key == 'initial_file':
                     setattr(self, key, '.\\schemas\\'+value)

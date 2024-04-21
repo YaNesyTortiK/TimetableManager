@@ -14,7 +14,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from src.tools.storage import Storage, get_filenames
 from src.tools.config_parser import Config
 from src.tools.logger import Logger
-from src.tools.tools import render_jinja
+from src.tools.tools import render_jinja, pick_bells
 
 ROOT_DIR = os.path.dirname(
     os.path.dirname(
@@ -114,7 +114,7 @@ def index():
     storage_data = storage.data
     if 'error' in storage_data:
         return render_template('render_index.html', message=storage_data['error'], config=config)
-    return render_template('render_index.html', parallels=storage_data['settings']['klasses'].keys(), show=config.show, config=config)
+    return render_template('render_index.html', parallels=storage_data['settings']['klasses'].keys(), show=config.show, bells=pick_bells(config.bells), config=config)
 
 @app.route('/get_rendered_parallel/', methods=['POST'])
 def get_rendered_parallel():
@@ -169,7 +169,7 @@ def teacher_popup():
 
 @app.route('/bells/')
 def get_bells():
-    return config.bells
+    return pick_bells(config.bells)
 
 @app.route('/generate_iframe/')
 @app.route('/generate_iframe/<int:days>/')
@@ -450,3 +450,7 @@ def cfg_remove_old_files():
         os.remove(config.directory+file)
     log(f'Старые файлы с расписанием успешно очищены ({"; ".join(files)})')
     return redirect('/config/')
+
+@app.route('/time/')
+def server_time():
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')

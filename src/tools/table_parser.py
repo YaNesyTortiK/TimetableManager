@@ -441,7 +441,6 @@ def get_color(workbook: openpyxl.Workbook, pointer: str):
             active = workbook.worksheets[0]
         color = active[pointer].font.color.rgb # type: ignore
         if len(color) != 8:
-            print(color)
             raise AttributeError
     except:
         return "#000000"

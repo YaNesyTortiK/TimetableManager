@@ -367,5 +367,33 @@ function highlight_lesson(lesson_num, day_num, currently) {
     }
 }
 
+function check_sync_time() {
+    fetch('/time/')
+        .then(response=>response.text().then(data=>{
+            const server = new Date(data)
+            const client = new Date()
+            // Приемлимая разница во времени - 3 минуты
+            if ((server >= client && (server-client)/1000/60>3) || (server < client && (client-server)/1000/60>3)) {
+                popup_container.innerHTML = '<div class="popup__bg" onclick="close_popup(this)"><div class="popup"><h2 class="klass_title">Предупреждение!</h2><p>Серверное время не совпадает с временем на устройстве! Это может вызвать некорректную работу и отображение!</p>'+`<span><b>Серверное время:</b> ${server}</span><br><span><b>Локальное время:</b> ${client}</span>`+'</div></div>';
+                popupBg = popup_container.children[0];
+                popup = popupBg.children[0];
+                popupBg.classList.add('active');
+                popup.classList.add('active');
+            }
+            }))
+        .catch()
+}
+
+function delay_daily_restart() {
+    let now = new Date();
+    let millis = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 5, 0, 0) - now;
+    if (millis < 0) {
+        millis += 86400000;
+    }
+    setTimeout(function(){window.location.reload()}, millis);
+}
+
 load_bells();
 load_startup();
+check_sync_time()
+delay_daily_restart()

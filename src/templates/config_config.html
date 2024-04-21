@@ -121,41 +121,13 @@ div class:lesson - строка содержащая урок" style="width: 100
                     <p class="why inline_elem"
                     data-tooltip="Выберите дни недели для показа (убедитесь что в таблице с расписанием эти дни указаны).">(?)</p></h3>
                     <div id="days_container">
-                        {% if 'Пн' in config.days %}
-                            <p class="inline_elem">Пн: <input class="inline_elem day_check" type="checkbox" checked id="Пн" onchange="unsaved()"></p>
-                        {% else %}
-                            <p class="inline_elem">Пн: <input class="inline_elem day_check" type="checkbox" id="Пн" onchange="unsaved()"></p>
-                        {% endif %}
-                        {% if 'Вт' in config.days %}
-                            <p class="inline_elem">Вт: <input class="inline_elem day_check" type="checkbox" checked id="Вт" onchange="unsaved()"></p>
-                        {% else %}
-                            <p class="inline_elem">Вт: <input class="inline_elem day_check" type="checkbox" id="Вт" onchange="unsaved()"></p>
-                        {% endif %}
-                        {% if 'Ср' in config.days %}
-                            <p class="inline_elem">Ср: <input class="inline_elem day_check" type="checkbox" checked id="Ср" onchange="unsaved()"></p>
-                        {% else %}
-                            <p class="inline_elem">Ср: <input class="inline_elem day_check" type="checkbox" id="Ср" onchange="unsaved()"></p>
-                        {% endif %}
-                        {% if 'Чт' in config.days %}
-                            <p class="inline_elem">Чт: <input class="inline_elem day_check" type="checkbox" checked id="Чт" onchange="unsaved()"></p>
-                        {% else %}
-                            <p class="inline_elem">Чт: <input class="inline_elem day_check" type="checkbox" id="Чт" onchange="unsaved()"></p>
-                        {% endif %}
-                        {% if 'Пт' in config.days %}
-                            <p class="inline_elem">Пт: <input class="inline_elem day_check" type="checkbox" checked id="Пт" onchange="unsaved()"></p>
-                        {% else %}
-                            <p class="inline_elem">Пт: <input class="inline_elem day_check" type="checkbox" id="Пт" onchange="unsaved()"></p>
-                        {% endif %}
-                        {% if 'Сб' in config.days %}
-                            <p class="inline_elem">Сб: <input class="inline_elem day_check" type="checkbox" checked id="Сб" onchange="unsaved()"></p>
-                        {% else %}
-                            <p class="inline_elem">Сб: <input class="inline_elem day_check" type="checkbox" id="Сб" onchange="unsaved()"></p>
-                        {% endif %}
-                        {% if 'Вс' in config.days %}
-                            <p class="inline_elem">Вс: <input class="inline_elem day_check" type="checkbox" checked id="Вс" onchange="unsaved()"></p>
-                        {% else %}
-                            <p class="inline_elem">Вс: <input class="inline_elem day_check" type="checkbox" id="Вс" onchange="unsaved()"></p>
-                        {% endif %}
+                        <p class="inline_elem">Пн:<input class="inline_elem day_check" type="checkbox" {% if 'Пн' in config.days %}checked{% endif %} id="Пн" onchange="unsaved()"> |</p>
+                        <p class="inline_elem">Вт:<input class="inline_elem day_check" type="checkbox" {% if 'Вт' in config.days %}checked{% endif %} id="Вт" onchange="unsaved()"> |</p>
+                        <p class="inline_elem">Ср:<input class="inline_elem day_check" type="checkbox" {% if 'Ср' in config.days %}checked{% endif %} id="Ср" onchange="unsaved()"> |</p>
+                        <p class="inline_elem">Чт:<input class="inline_elem day_check" type="checkbox" {% if 'Чт' in config.days %}checked{% endif %} id="Чт" onchange="unsaved()"> |</p>
+                        <p class="inline_elem">Пт:<input class="inline_elem day_check" type="checkbox" {% if 'Пт' in config.days %}checked{% endif %} id="Пт" onchange="unsaved()"> |</p>
+                        <p class="inline_elem">Сб:<input class="inline_elem day_check" type="checkbox" {% if 'Сб' in config.days %}checked{% endif %} id="Сб" onchange="unsaved()"> |</p>
+                        <p class="inline_elem">Вс:<input class="inline_elem day_check" type="checkbox" {% if 'Вс' in config.days %}checked{% endif %} id="Вс" onchange="unsaved()"></p>
                     </div>
             </div>
         </div>
@@ -163,20 +135,60 @@ div class:lesson - строка содержащая урок" style="width: 100
     <div class="cfg_elem">
         <h3 class="elem_title">Расписание звонков
             <p class="why inline_elem"
-                data-tooltip="На основе этого расписания будут подсвечиваться текущие уроки и уроки которые начнуться после перемены. Если одно из полей (кроме комментария) было оставлено пустым, программа автоматически пропустит его. Если не будет заполнено ни одного поля, в расписании не будет отображаться кнопка для просмотра распиания звонков. Пример ввода: 1; 8:00; 8:40; Комментарий для перемены после урока (Пример: столовая начальная школа)">(?)</p></h3>
-        {%- for lsn in config.bells -%}
-            <div class="bells_container">
-                <input class="inline_elem lsn_num" value="{{ lsn }}" type="number" placeholder="Номер урока"  onchange="unsaved()">
-                <input class="inline_elem start_time" value="{{ config.bells[lsn][0] }}" placeholder="ЧЧ:ММ"  onchange="unsaved()"> - <input class="inline_elem end_time" value="{{ config.bells[lsn][1] }}" placeholder="ЧЧ:ММ" onchange="unsaved()">
-                {% if config.bells[lsn][2] == None %}
-                    <input class="inline_elem bell_comment" placeholder="Комментарий" onchange="unsaved()">
-                {% else %}
-                    <input class="inline_elem bell_comment" value="{{ config.bells[lsn][2] }}" placeholder="Комментарий" onchange="unsaved()">
+                data-tooltip="На основе этого расписания будут подсвечиваться текущие уроки и уроки которые начнутся после перемены. Если одно из полей (кроме комментария) было оставлено пустым, программа автоматически пропустит его. Если не будет заполнено ни одного поля, в расписании не будет отображаться кнопка для просмотра распиания звонков. Пример ввода: 1; 8:00; 8:40; Комментарий для перемены после урока (Пример: столовая начальная школа). Приоритет групп: Расписание на дату -> Расписание на день недели -> Расписание на все дни">(?)</p></h3>
+        {% for lsn_group in config.bells %}
+            <div class="cfg_elem inline_elem bells_group_container">
+                <label>Расписание на: </label> 
+                <select name="inp_type" class="bells_inp_type inline_elem" onchange="bells_inp_type(this)">
+                    <option value="all" {% if lsn_group['type'] == 'all' %}selected{% endif %}>Все дни</option>
+                    <option value="weekday" {% if lsn_group['type'] == 'weekday' %}selected{% endif %}>День недели</option>
+                    <option value="date" {% if lsn_group['type'] == 'date' %}selected{% endif %}>Дата</option>
+                </select>
+                {% if lsn_group['type'] == 'weekday' %}
+                    <div class="bells_inp_param">
+                        <label>Выберите дни недели:</label>
+                        <div class="bells_inp_value inline_elem">
+                            <p class="inline_elem">Пн:<input class="inline_elem day_check" type="checkbox" {% if 'Пн' in lsn_group['options'] %}checked{% endif %} id="Пн" onchange="unsaved()"> |</p>
+                            <p class="inline_elem">Вт:<input class="inline_elem day_check" type="checkbox" {% if 'Вт' in lsn_group['options'] %}checked{% endif %} id="Вт" onchange="unsaved()"> |</p>
+                            <p class="inline_elem">Ср:<input class="inline_elem day_check" type="checkbox" {% if 'Ср' in lsn_group['options'] %}checked{% endif %} id="Ср" onchange="unsaved()"> |</p>
+                            <p class="inline_elem">Чт:<input class="inline_elem day_check" type="checkbox" {% if 'Чт' in lsn_group['options'] %}checked{% endif %} id="Чт" onchange="unsaved()"> |</p>
+                            <p class="inline_elem">Пт:<input class="inline_elem day_check" type="checkbox" {% if 'Пт' in lsn_group['options'] %}checked{% endif %} id="Пт" onchange="unsaved()"> |</p>
+                            <p class="inline_elem">Сб:<input class="inline_elem day_check" type="checkbox" {% if 'Сб' in lsn_group['options'] %}checked{% endif %} id="Сб" onchange="unsaved()"> |</p>
+                            <p class="inline_elem">Вс:<input class="inline_elem day_check" type="checkbox" {% if 'Вс' in lsn_group['options'] %}checked{% endif %} id="Вс" onchange="unsaved()"></p>
+                        </div>
+                    </div>
                 {% endif %}
-                <button class="inline_elem" onclick="remove_group(this)">X</button>
+                {% if lsn_group['type'] == 'date' %}
+                    <div class="bells_inp_param">
+                        <label>Укажите дату: </label>
+                        <input class="bells_inp_value" type="date" value="{{ lsn_group['options'] }}">
+                        <p><b>Обратите внимание</b>, расписание на дату будет в приоритете, даже если есть расписание на день недели или на все дни.</p>
+                    </div>
+                {% endif %}
+                {% if lsn_group['type'] == 'all' %}
+                    <div class="bells_inp_param"></div>
+                {% endif %}
+                <button onclick="remove_group(this)">Удалить группу</button>
+                <hr>
+                {%- for lsn in lsn_group -%}
+                    {% if lsn != 'options' and lsn != 'type' %}
+                        <div class="bells_container">
+                            <input class="inline_elem lsn_num" value="{{ lsn }}" type="number" placeholder="Номер урока"  onchange="unsaved()">
+                            <input class="inline_elem start_time" value="{{ lsn_group[lsn][0] }}" placeholder="ЧЧ:ММ"  onchange="unsaved()"> - <input class="inline_elem end_time" value="{{ lsn_group[lsn][1] }}" placeholder="ЧЧ:ММ" onchange="unsaved()">
+                            {% if lsn_group[lsn][2] == None %}
+                                <input class="inline_elem bell_comment" placeholder="Комментарий" onchange="unsaved()">
+                            {% else %}
+                                <input class="inline_elem bell_comment" value="{{ lsn_group[lsn][2] }}" placeholder="Комментарий" onchange="unsaved()">
+                            {% endif %}
+                            <button class="inline_elem" onclick="remove_group(this)">X</button>
+                        </div>
+                        <button onclick="add_bell(this)" class="inline_elem">+</button>
+                    {% endif %}
+                {%- endfor -%}
             </div>
-        {%- endfor -%}
-        <button onclick="add_bell(this)">+</button>
+        {% endfor %}
+        <div class="splitter"></div>
+        <button onclick="add_bells_group(this)">Добавить группу</button>
     </div>
     <div class="cfg_elem">
         <h3 class="elem_title">Настройки преобразований

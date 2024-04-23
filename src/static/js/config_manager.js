@@ -42,7 +42,7 @@ function add_bells_group(elem) {
     <div class="cfg_elem inline_elem bells_group_container">
         <label>Расписание на: </label> 
         <select name="inp_type" class="bells_inp_type inline_elem" onchange="bells_inp_type(this)">
-            <option value="*">Все дни</option>
+            <option value="all">Все дни</option>
             <option value="weekday">День недели</option>
             <option value="date">Дата</option>
         </select>
@@ -160,12 +160,12 @@ function get_bells() {
         } else if (inp_type == 'date') {
             options = inp_value_container.value
         }
-        data = {'type': inp_type, 'options': options}
+        let data = {'type': inp_type, 'options': options}
         for (container of group.getElementsByClassName("bells_container")) {
-            let num = group.getElementsByClassName("lsn_num")[0].value.trim()
-            let start_time = group.getElementsByClassName("start_time")[0].value.trim()
-            let end_time = group.getElementsByClassName("end_time")[0].value.trim()
-            let comment = group.getElementsByClassName("bell_comment")[0].value.trim()
+            let num = container.getElementsByClassName("lsn_num")[0].value.trim()
+            let start_time = container.getElementsByClassName("start_time")[0].value.trim()
+            let end_time = container.getElementsByClassName("end_time")[0].value.trim()
+            let comment = container.getElementsByClassName("bell_comment")[0].value.trim()
             if (num == '' || !isNumeric(num) || start_time == '' || end_time == '') {
                 continue
             }

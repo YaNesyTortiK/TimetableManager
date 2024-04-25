@@ -451,6 +451,15 @@ def cfg_remove_old_files():
     log(f'Старые файлы с расписанием успешно очищены ({"; ".join(files)})')
     return redirect('/config/')
 
+@app.route('/cfg_remove_all_files/')
+@flask_login.login_required
+def cfg_remove_all_files():
+    files = get_filenames(config.directory)
+    for file in files:
+        os.remove(config.directory+file)
+    log.warning(f'Очищены все файлы с расписанием: ({"; ".join(files)})')
+    return redirect('/config/')
+
 @app.route('/time/')
 def server_time():
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')

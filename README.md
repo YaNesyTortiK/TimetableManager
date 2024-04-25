@@ -354,6 +354,9 @@ Used to write custom scripts to automate certain processes.
 (Available only if there is at least one custom function)
 When clicked, a page with buttons will open. When you click the button, the corresponding function will be deleted **beyond retrieve**.
 
+### Delete all schedule files
+When clicked, all tables are deleted. (When updating the data, the server will report an error and continue working on the previously used data)
+
 ### Delete old schedule files
 (Available only if there are at least two files in the directory with tables)
 When clicked, all unused tables are deleted.
@@ -364,6 +367,7 @@ When clicked, all unused tables are deleted.
 - Документация - link to the README on russian
 - Сообщить об ошибке - link to issues page on this repo
 - Информация о сервере - will show basic info about program (Name, version, modification, when version saved, contact info)
+- Серверное время - server time, will open a page with server time (to update data reload page)
 
 # Using the program in schedule display mode
 ### Overview

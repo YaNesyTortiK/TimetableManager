@@ -133,3 +133,7 @@
 .inline_element {
     display: inline-block;
 }
+
+.inline_elem {
+    display: inline-block;
+}

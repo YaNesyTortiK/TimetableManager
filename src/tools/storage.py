@@ -2,7 +2,7 @@ from src.tools.table_parser import parse_table, save_data_to_table
 from src.tools.logger import Logger
 from datetime import datetime, timedelta, time
 from shutil import copy2
-from os import listdir
+from os import listdir, path
 from os.path import isfile, join
 import re
 
@@ -174,3 +174,92 @@ def sort_filenames(files: list) -> list:
     for k in sorted(dub.keys(), reverse=True, key=lambda x: datetime.strptime(x, '%d-%m-%Y')):
         res.append(dub[k])
     return res
+
+class Carousel:
+    """
+    Класс для обработки карусели.
+    При вызове возвращает путь до следующего файла.
+    """
+    def __init__(self, root_dir: str, directory: str = 'data/carousel/'):
+        self.root_dir = root_dir+'/'
+        self.directory = directory
+        self.dir_abs_path = path.abspath(self.root_dir+self.directory+'/')
+        self.files = [f for f in listdir(directory) if isfile(join(directory, f))]
+        if len(self.files) == 0:
+            raise FileNotFoundError(f'Не найдено файлов для карусели в дирректории "{directory}"')
+        self.sort()
+        self._ind = 0
+
+    def __call__(self, step: int = 1, index: int = None, absolute_path: bool = False) -> str:
+        """Возвращает путь до следующего файла или, если указан step, возвращает путь до step файла
+        :step: шаг (может быть отрицательным)
+        :index: с какого индекса начинать (индекс должен быть легитимным)
+        :absolute_path: True - для возврата абсолютного пути до файла, False - для возврата только имени файла
+        """
+        if index is None:
+            ind = self._ind
+        else:
+            ind = index
+        if step > 0 and ind+step >= len(self.files):
+            ind = 0
+        elif step < 0 and ind+step < 0:
+            ind = len(self.files)+step-ind
+        else:
+            ind += step
+        if index is None:
+            self._ind = ind
+        if absolute_path:
+            return path.abspath(self.root_dir+self.directory+self.files[ind])
+        else:
+            return self.files[ind]
+    
+    def next(self, cur: str = None) -> str:
+        """Возвращает путь до следующего файла"""
+        if cur is None:
+            return self[0]
+        return self.__call__(1, self.index(cur))
+    
+    def prev(self, cur: str = None) -> str:
+        """Возвращает путь до предыдущего файла"""
+        return self.previous(cur)
+    
+    def previous(self, cur: str = None) -> str:
+        """Возвращает путь до предыдущего файла"""
+        if cur is None:
+            return self[0]
+        return self.__call__(-1, self.index(cur))
+    
+    def set_null(self):
+        """Устанавливает глобальный индекс в 0"""
+        self._ind = 0
+
+    def __len__(self):
+        return len(self.files)
+    
+    def __getitem__(self, key):
+        return self.files[key]
+    
+    def __delitem__(self, key):
+        del self.files[key]
+
+    def __repr__(self) -> str:
+        return '; '.join(self.files)
+    
+    def append(self, path: str):
+        """Добавляет элемент"""
+        self.files.append(path)
+
+    def remove(self, item: str):
+        """Удаляет элемент (не индекс, а сам элемент)"""
+        self.__delitem__(self.index(item))
+
+    def index(self, item: str):
+        try:
+            ind = self.files.index(item)
+        except ValueError:
+            raise ValueError(f'Неверный аргумент карусели! В списке нет элемента "{item}"')
+        return ind
+
+    def sort(self):
+        """Сортирует список"""
+        self.files.sort() 

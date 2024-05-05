@@ -11,7 +11,7 @@ import io
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from src.tools.storage import Storage, get_filenames
+from src.tools.storage import Storage, get_filenames, Carousel
 from src.tools.config_parser import Config
 from src.tools.logger import Logger
 from src.tools.tools import render_jinja, pick_bells
@@ -31,11 +31,20 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
 
-# Storage & logger setup vvv
+# Storage & logger & carousel setup vvv
 storage = Storage(config)
 log = Logger(config.log_filename, config.log_to_console)
 log('Запуск сервера')
-# End of storage & logger setup ^^^
+if config.carousel:
+    try:
+        carousel = Carousel(ROOT_DIR)
+    except FileNotFoundError:
+        config.carousel = False
+        log.warning('Не найдены данные для карусели. Карусель автоматически отключена.')
+    except Exception as ex:
+        config.carousel = False
+        log.error(f'Произошла непредвиденная ошибка при инциализации карусели: {ex}. Карусель автоматически отключена.')
+# End of storage & logger & carousel setup ^^^
 
 # Data updater setup vvv
 def periodic_task():
@@ -242,6 +251,29 @@ def update_url():
             res += f'Error occured while saving iframe: {ex}'
             status = 500
     return res, status
+
+@app.route('/carousel/', methods=['GET'])
+def carousel_init():
+    if config.carousel:
+        return {
+            "file": carousel(0,0)
+        }
+    return abort(400, 'Карусель отключена')
+
+@app.route('/carousel/', methods=['POST'])
+def carousel_data():
+    data = dict(request.json)
+    if config.carousel:
+        return {
+            "file": carousel(int(data['step']), carousel.index(data['current']))
+            }
+    return abort(400, 'Карусель отключена')
+
+@app.route('/carousel/<string:path>/')
+def carousel_file(path: str):
+    if config.carousel:
+        return send_file(carousel.dir_abs_path+'/'+path)
+    return abort(400, 'Карусель отключена')
 
 # End of render part ^^^
 

@@ -60,6 +60,11 @@ class Config:
 
     custom_iframe_head = '' # Кастомный текст для head при генерации iframe
 
+    carousel = False # Показывать карусель фотографий и видео
+    carousel_after = 600 # Через какое время неактивности показывать карусель (в секундах)
+    carousel_delay = 15 # Задержка между переключениями фотографий/видео в карусели (видео проигрываются полностью, независимо от этого параметра)
+    carousel_mobile = False # Разрешить карусель на мобильных устройствах
+
     program_info = {
         'name': 'Timetable Manager',
         'version': '1.3.1',
@@ -124,6 +129,12 @@ class Config:
             "log_filename": self.log_filename,
             "log_to_console": self.log_to_console,
             "custom_iframe_head": self.custom_iframe_head,
+
+            "carousel": self.carousel,
+            "carousel_after": self.carousel_after,
+            "carousel_delay": self.carousel_delay,
+            "carousel_mobile": self.carousel_mobile,
+
             "funfunct": self.funfunct
         }
         with open(self.file, 'w', encoding='utf-8') as f: # Открытие файла через контекстный менеджер

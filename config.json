@@ -1,5 +1,5 @@
 {
-    "is_setup": false,
+    "is_setup": true,
     "use_web_editor": false,
     "schema_file": false,
     "directory": "data/timetable/",
@@ -8,7 +8,7 @@
     "port": 5000,
     "username": "admin",
     "password": "admin",
-    "debug": false,
+    "debug": true,
     "second_shift": ["6"],
     "second_shift_delay": 6,
     "show": ["5", "6"],
@@ -38,7 +38,12 @@
     "custom_functions": {},
     "bells": [],
     "log_filename": "log.txt",
-    "log_to_console": false,
+    "log_to_console": true,
     "custom_iframe_head": "",
+    "carousel": true,
+    "carousel_after": 15,
+    "carousel_delay": 15,
+    "carousel_mobile": false,
+
     "funfunct": true
 }

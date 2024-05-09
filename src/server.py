@@ -274,7 +274,6 @@ def carousel_file(path: str):
     if config.carousel:
         return send_file(carousel.dir_abs_path+'/'+path)
     return abort(400, 'Карусель отключена')
-
 # End of render part ^^^
 
 # Web-Config part

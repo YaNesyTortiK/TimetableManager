@@ -119,6 +119,71 @@ button.parallel_btn:hover {
     transition: 0.1s all;
 }
 
+
+.carousel_popup {
+    position: absolute;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    background: rgb(255, 255, 255, 1.0);
+    font-size: 3vh;
+    width: 80vw;
+    height: 60vh;
+    padding: 30px;
+    transition: 0.1s all;
+    border-radius: 15px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.carousel_popup.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translate(-50%, -50%) scale(1);
+    transition: 0.1s all;
+}
+
+#carousel_data {
+    display: flex;
+    position: fixed;
+    top: 3%;
+    bottom: 3%;
+    left: 3%;
+    right: 3%;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel_elem {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.carousel_arrow {
+    position: fixed;
+    top: 2%;
+    height: 96%;
+    width: 40%;
+    opacity: 1;
+    background: none;
+    color: black;
+    border: none;
+    font-size: large;
+}
+
+.carousel_arrow.left {
+    z-index: 5;
+    left: 2%;
+    text-align: left;
+}
+
+.carousel_arrow.right {
+    z-index: 5;
+    right: 2%;
+    text-align: right;
+}
+
 .in_popup {
     font-size: 1.5vh;
 }

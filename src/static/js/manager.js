@@ -10,6 +10,10 @@ const bells_container = document.getElementById("show_bells_btn")
 const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 let clcks = 0;
 let currently_loaded = undefined;
+let carousel = false;
+let carousel_after = undefined;
+let carousel_delay = undefined;
+let delay_carousel_timeout = undefined;
 
 function load_parallel(elem) {
     let num = elem.name;
@@ -200,6 +204,7 @@ function close_popup(elem) {
     if (!elem.children[0].classList.contains('clicked')) {
         elem.classList.remove('active'); // Убираем активный класс с фона
         elem.children[0].classList.remove('active'); // И с окна
+        elem.innerHTML = ''
     } else {
         elem.children[0].classList.remove('clicked');
     }
@@ -393,7 +398,25 @@ function delay_daily_restart() {
     setTimeout(function(){window.location.reload()}, millis);
 }
 
+function load_carousel_cfg() {
+    let cont = document.getElementById('carousel_config')
+    let data = JSON.parse(cont.innerHTML.toLowerCase())
+    carousel = data['carousel']
+    carousel_after = data['carousel_after']
+    carousel_delay = data['carousel_delay']
+    if (carousel) {
+        document.addEventListener('click', delay_carousel)
+        delay_carousel()
+    }
+}
+
+function delay_carousel() {
+    if (delay_carousel_timeout !== undefined) clearTimeout(delay_carousel_timeout);
+    delay_carousel_timeout = setTimeout(show_carousel, carousel_after*1000);
+}
+
 load_bells();
+load_carousel_cfg();
 load_startup();
-check_sync_time()
-delay_daily_restart()
+check_sync_time();
+delay_daily_restart();

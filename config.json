@@ -40,9 +40,9 @@
     "log_filename": "log.txt",
     "log_to_console": true,
     "custom_iframe_head": "",
-    "carousel": true,
-    "carousel_after": 15,
-    "carousel_delay": 15,
+    "carousel": false,
+    "carousel_after": 5,
+    "carousel_delay": 2,
     "carousel_mobile": false,
 
     "funfunct": true

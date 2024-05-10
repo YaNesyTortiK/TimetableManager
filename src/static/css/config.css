@@ -245,3 +245,12 @@ h3.elem_title {
 .tool-btn:hover {
     background-color: rgb(143, 143, 143);
 }
+
+.img_preview {
+    max-width: 20vw;
+    max-height: 20vh;
+}
+
+.remove_carousel_image_btn {
+    margin-top: 10px;
+}

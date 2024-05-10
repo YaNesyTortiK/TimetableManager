@@ -17,6 +17,11 @@ const dir_inp = document.getElementById('directory')
 const log_filename_inp = document.getElementById('log_filename')
 const log_to_console_flag = document.getElementById('log_to_console')
 const custom_iframe_head = document.getElementById('custom_head')
+const carousel_flag = document.getElementById('carousel')
+const carousel_directory_inp = document.getElementById('carousel_directory')
+const carousel_after_inp = document.getElementById('carousel_after')
+const carousel_delay_inp = document.getElementById('carousel_delay')
+const carousel_mobile_flag = document.getElementById('carousel_mobile')
 
 let edited = true;
 
@@ -229,7 +234,12 @@ function save_data() {
         'bells': get_bells(),
         'log_filename': log_filename_inp.value,
         'log_to_console': log_to_console_flag.checked,
-        'custom_iframe_head': custom_iframe_head.value
+        'custom_iframe_head': custom_iframe_head.value,
+        'carousel': carousel_flag.checked,
+        'carousel_after': Number(carousel_after_inp.value),
+        'carousel_delay': Number(carousel_delay_inp.value),
+        'carousel_mobile': carousel_mobile_flag.checked,
+        'carousel_directory': carousel_directory_inp.value
     }
     fetch(save_url, {
         method: 'POST',

@@ -35,15 +35,16 @@ login_manager.init_app(app)
 storage = Storage(config)
 log = Logger(config.log_filename, config.log_to_console)
 log('Запуск сервера')
-if config.carousel:
-    try:
-        carousel = Carousel(ROOT_DIR)
-    except FileNotFoundError:
-        config.carousel = False
-        log.warning('Не найдены данные для карусели. Карусель автоматически отключена.')
-    except Exception as ex:
-        config.carousel = False
-        log.error(f'Произошла непредвиденная ошибка при инциализации карусели: {ex}. Карусель автоматически отключена.')
+try:
+    carousel = Carousel(config.carousel_directory)
+except FileNotFoundError:
+    config.carousel = False
+    log.warning('Не найдены данные для карусели. Карусель автоматически отключена.')
+except Exception as ex:
+    config.carousel = False
+    log.error(f'Произошла непредвиденная ошибка при инциализации карусели: {ex}. Карусель автоматически отключена.')
+finally:
+    carousel = Carousel(config.carousel_directory, skip_check=True) # Создаем пустую карусель (для возможной загрузки файлов)
 # End of storage & logger & carousel setup ^^^
 
 # Data updater setup vvv
@@ -322,6 +323,65 @@ def upload():
     except Exception as ex:
         log.error(f'Произошла ошибка при сохранении файла. Ошибка: {ex}')
         return render_template('config_upload.html', program_info=config.program_info, config=config, error=f'Произошла ошибка при сохранении файла. Ошибка: {ex}')
+
+@app.route('/carousel_edit/', methods=['GET'])
+@flask_login.login_required
+def upload_carousel_render():
+    return render_template('config_upload_carousel.html', images=carousel.files, program_info=config.program_info, config=config)
+
+@app.route('/carousel_edit/', methods=['POST'])
+@flask_login.login_required
+def upload_carousel():
+    if 'file' not in request.files:
+        return abort(400, 'Файл не загружен')
+    errors = []
+    for file in request.files.getlist('file'):
+        if file.filename[file.filename.rfind('.')+1:] not in carousel.allowed_extensions:
+            errors.append(f'Ошибка при загрузке "{file.filename}" - тип файла не поддерживается.')
+            continue
+        try:
+            file.save(config.carousel_directory+file.filename)
+            carousel.append(file.filename)
+            carousel.sort()
+            log(f'Файл карусели "{config.carousel_directory+file.filename}" загружен.')
+        except FileExistsError as ex:
+            log.warning(f'Загружаемый файл карусели "{file.filename}" уже существует.')
+            errors.append(f'Ошибка при загрузке "{file.filename}" - файл уже существует.')
+        except Exception as ex:
+            log.error(f'Произошла ошибка при сохранении файла карусели "{config.carousel_directory+file.filename}". Ошибка: {ex}')
+            errors.append(f'Ошибка при загрузке "{file.filename}" - произошла непредвиденная ошибка {ex}.')
+    if len(errors) == 0:
+        return 'Ok'
+    return abort(400, f'Ошибки:\n {"\n".join(errors)}')
+
+@app.route('/carousel_edit/remove/<string:path>/', methods=['GET'])
+@flask_login.login_required
+def upload_carousel_remove(path):
+    try:
+        carousel.remove(path)
+    except ValueError:
+        log.warning(f'Неудачная попытка удалить несуществующий файл карусели "{path}"')
+        return abort(400, f'Файл "{path}" не существует.')
+    except Exception as ex:
+        log.error(f'Произошла непредвиденная ошибка при удалении файла карусели "{path}" из объекта carousel. Ошибка: {ex}')
+        return abort(500, f'Произошла непредвиденная ошибка при удалении файла карусели "{path}" из объекта carousel. Ошибка: {ex}')
+    try:
+        os.remove(carousel.dir_abs_path+'/'+path)
+    except Exception as ex:
+        log.error(f'Произошла непредвиденная ошибка при удалении файла карусели "{path}". Ошибка: {ex}')
+        return abort(500, f'Произошла непредвиденная ошибка при удалении файла карусели "{path}". Ошибка: {ex}')
+    log(f'Файл карусели "{carousel.dir_abs_path+'/'+path}" успешно удален.')
+    return 'Ok'
+
+@app.route('/carousel_edit/<string:path>/', methods=['GET'])
+@flask_login.login_required
+def upload_carousel_images(path: str):
+    return send_file(carousel.dir_abs_path+'/'+path)
+
+@app.route('/carousel_edit/send/<string:path>/', methods=['GET'])
+@flask_login.login_required
+def upload_carousel_images_send(path: str):
+    return send_file(carousel.dir_abs_path+'/'+path, as_attachment=True, download_name=path)
 
 @app.route('/custom_iframe/', methods=['GET'])
 @flask_login.login_required

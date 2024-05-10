@@ -221,6 +221,23 @@ div class:lesson - строка содержащая урок" style="width: 100
             <button onclick="add_short(this)">+</button>
         </div>
     </div>
+    <div class="cfg_elem">
+        <h3 class="elem_title">Настройки карусели<p class="why inline_elem"
+            data-tooltip="Карусель представляет собой интерфейс для показа мультимедийной информации в всплывающем окне через некоторое время бездействия.">(?)</p></h3>
+        <p class="inline_elem">Включить карусель: <input class="inline_elem" type="checkbox" {% if config.carousel %}checked{% endif %} id="carousel" onchange="unsaved()"></p><br>
+        <p class="inline_elem">Директория с файлами: <input id="carousel_directory" value="{{ config.carousel_directory }}" onchange="unsaved()"> 
+            <p class="why inline_elem"
+            data-tooltip="Укажите путь до папки, где будут находится файлы для карусели. Пример: /Users/User/Documents/carousel/   (По умолчанию data/carousel/)">(?)</p><br>
+        <p class="inline_elem">Автоматическая активация через: <input class="inline_elem" type="number" id="carousel_after" value="{{ config.carousel_after }}" min="0" onchange="unsaved()"> секунд. 
+            <p class="why inline_elem"
+                data-tooltip="Через сколько секунд бездействия (отсутствие нажатия по интерфейсу) автоматически запустится карусель (0 чтобы отключить автозапуск)">(?)</p><br>
+        <p class="inline_elem">Автоматическая прокрутка через: <input class="inline_elem" type="number" id="carousel_delay" value="{{ config.carousel_delay }}" min="0" onchange="unsaved()"> секунд. 
+            <p class="why inline_elem"
+                data-tooltip="Через какой промежуток времени карусель сама переключится на следующий файл. (0 для отключения авто-переключения)">(?)</p><br>
+        <p class="inline_elem">Разрешить на мобильных устройствах: <input class="inline_elem" type="checkbox" {% if config.carousel_mobile %}checked{% endif %} id="carousel_mobile" onchange="unsaved()"><p class="why inline_elem"
+            data-tooltip="При включении этого параметра на мобильном устройстве (устройство под управлением android/ios) будет недоступна функция карусели и отключен автоматический запуск карусели. (Рекомендуется отключить карусель для мобильных устройств)">(?)</p><br>
+        <p lass="inline_elem"><a href="/carousel_edit/">Редактор карусели</a></p>
+    </div>
     <button id="save_btn" onclick="save_data()">Сохранить</button>
 {% endblock %}
 {% block scripts %}

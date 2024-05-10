@@ -17,7 +17,9 @@ function show_carousel() {
     if (next_timeout !== undefined) {
         clearTimeout(next_timeout)
     }
-    next_timeout = setTimeout(update_carousel, carousel_delay*1000)
+    if (carousel_delay > 0) {
+        next_timeout = setTimeout(update_carousel, carousel_delay*1000)
+    }
 }
 
 async function update_carousel(t) {
@@ -34,7 +36,9 @@ async function update_carousel(t) {
     if (next_timeout !== undefined) {
         clearTimeout(next_timeout)
     }
-    next_timeout = setTimeout(update_carousel, carousel_delay*1000)
+    if (carousel_delay > 0) {
+        next_timeout = setTimeout(update_carousel, carousel_delay*1000)
+    }
 }
 
 async function load_carousel_data(t) {

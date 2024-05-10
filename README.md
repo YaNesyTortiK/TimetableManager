@@ -19,6 +19,8 @@
     - [Grouping and render settings](#grouping-and-render-settings)
     - [Bells settings](#bells-settings)
     - [Mutation settings](#mutation-settings)
+    - [Carousel settings](#carousel-settings)
+    - [Carousel redactor](#carousel-redactor)
 * [Additional functions](#additional-functions)
     - [Update file on server](#update-file-on-server)
     - [Upload file](#upload-file)
@@ -30,6 +32,7 @@
         - [Change password](#password-change)
         - [Create custom function](#create-a-custom-function)
         - [Remove custom function](#remove-custom-function)
+        - [Delete all timetable files](#delete-all-schedule-files)
         - [Delete old timetable files](#delete-old-schedule-files)
     - [Information](#information)
 * [Usage](#using-the-program-in-schedule-display-mode)
@@ -184,7 +187,7 @@ After this, you can go to the address [127.0.0.1:5000](127.0.0.1:5000) and check
 
 # Initial setup
 ### Enter the settings
-1. Go to [127.0.0.1/config/](http://127.0.0.1/config/) (If you are running the program with `python wsgi.py`: [127.0.0.1:5000/config/](http: //127.0.0.1:5000/config/)). After this, the message “Не авторизованы. Войти” will appear. Click on the link [Войти](http://127.0.0.1/login/) (If you run the program using `python wsgi.py`: [Войти](http://127.0.0.1:5000/login/)) and you should see a page with input fields for "User" and "Password"
+1. Go to [127.0.0.1/config/](http://127.0.0.1/config/) (If you are running the program with `python wsgi.py`: [127.0.0.1:5000/config/](http: //127.0.0.1:5000/config/)). After this, the message “Не авторизованы. Войти” will appear. Click on the link "Войти" (http://127.0.0.1/login/) (If you run the program using `python wsgi.py`: "Войти" (http://127.0.0.1:5000/login/)) and you should see a page with input fields for "User" and "Password"
 ![Login](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/Login.png?raw=true)
 2. Enter your details. (If you are logging in for the first time, by default your login information is: `User: admin`, `Password: admin`)
 
@@ -219,7 +222,7 @@ After this, you can go to the address [127.0.0.1:5000](127.0.0.1:5000) and check
 ### Data Settings
 ![DataSettings](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/DataSettings.png?raw=true)
 1. Директория с таблицей - folder/directory where all excel/libre office tables with schedules are stored (by default `data/timetable/`). It is recommended to use an absolute path to specify the directory (Windows: `C:\Users\user\timetable\` Linux: `/mnt/timetable/`). **__If you are using Docker DO NOT change this setting__**
-2. Время жизни данных - how often the data will be forced to refresh from the table (default 300 sec). If you only use table loading via the web interface, you can set the value to `0` to disable forced updating.
+2. Время жизни данных - how often the data will be forced to refresh from the table (default 3600 sec). If you only use table loading via the web interface, you can set the value to `0` to disable forced updating.
 
 ### Iframe settings
 iframe - embedded html document. Used to embed schedules on external sites. You can try generation using [Custom Iframe](#custom-iframe)
@@ -289,6 +292,39 @@ Schedule priority:
 1. Расширенные названия - Expanded Titles. Titles that will be displayed when you click on the class schedule. Example: Math - Mathematics (On the left is what is indicated in the table with the schedule, on the right is what will be displayed.) ("+" for adding, "x" for deleting)
 2. C;fnst yfpdfybz - Compressed titles. Titles that will be displayed in general form (parallel view) and in an iframe. Example: Literature - LIT (On the left is what is indicated in the table with the schedule, on the right is what will be displayed.) ("+" for adding, "x" for deleting)
 
+### Carousel settings
+![CarouselSettings](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/CarouselSettings.png?raw=true)
+
+1. Включить карусель - (enable carousel) Enables the carousel feature (disabled by default). On the parallel schedule selection panel (bottom of main screen), a “Карусель” button will appear; when clicked, the carousel interface will open.
+![CarouselInterface](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/CarouselInterface.png?raw=true)
+
+    * The image will be resized to fit the interface (while maintaining the aspect ratio)
+    * To go to the next picture, click on the right side of the picture
+    * To go to the previous picture, click on the left side of the picture
+    * To exit the interface, click on the dark part around
+
+2. Директория с файлами - (directory with files) the folder where all the pictures that will be shown are stored (by default `data/carousel/`).
+
+3. Автоматическая активация через _ секунд - (Automatic activation after _ seconds) after how many seconds of inactivity (no user clicks on the screen) will the carousel automatically turn on (Default `900`). To disable automatic activation, enter the value `0`
+
+4. Автоматическая прокрутка через _ секунд - (Auto scroll after _ seconds) after how many seconds of inactivity with the carousel activated (the interface is visible) will it automatically switch to the next picture (Default `15`). To disable automatic scrolling, enter a value of `0`. (If the picture is switched manually, the timer will be reset)
+
+5. Разрешить на мобильных устройствах - (Allow on mobile devices) whether the carousel will be enabled on mobile devices (Disabled by default). (A mobile device will be considered a device that has: '.*Android.*|.*webOS.*|.*iPhone.*|.*iPad.*|.*iPod.*|.*BlackBerry. *|.*IEMobile.*|.*Opera Mini.*' in the request header (recognition function: `server.py:utility_processor`)). It is recommended to disable this option to reduce the load on the network and device.
+
+6. Редактор карусели - (Carousel editor) link to [redactor interface](#carousel-redactor)
+
+### Carousel redactor
+![CarouselRedactor](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/CarouselRedactor.png?raw=true)
+
+1. Загруженный контент - (Uploaded content) all uploaded files are presented here
+
+    * To download the file, click on the name under the picture
+    * To delete a file, click the "Удалить" button (Deleted files are beyond retrieve)
+
+2. Загрузить - (Upload) field for uploadinf files
+
+    * Supported file formats: 'png', 'jpeg', 'jpg', 'webm', 'gif' (`tools:storage.py:Carousel:allowed_extensions`)
+    * It is possible to upload multiple files at the same time
 
 # Additional functions
 Additional features can only be used after initial setup

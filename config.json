@@ -1,17 +1,22 @@
 {
-    "is_setup": true,
+    "is_setup": false,
     "use_web_editor": false,
     "schema_file": false,
     "directory": "data/timetable/",
-    "lifetime": 300,
+    "lifetime": 3600,
     "host": "0.0.0.0",
     "port": 5000,
     "username": "admin",
     "password": "admin",
-    "debug": true,
-    "second_shift": ["6"],
+    "debug": false,
+    "second_shift": [
+        "6"
+    ],
     "second_shift_delay": 6,
-    "show": ["5", "6"],
+    "show": [
+        "5",
+        "6"
+    ],
     "groups": {},
     "days": [
         "\u041f\u043d",
@@ -38,12 +43,12 @@
     "custom_functions": {},
     "bells": [],
     "log_filename": "log.txt",
-    "log_to_console": true,
+    "log_to_console": false,
     "custom_iframe_head": "",
     "carousel": false,
-    "carousel_after": 5,
-    "carousel_delay": 2,
+    "carousel_after": 900,
+    "carousel_delay": 15,
     "carousel_mobile": false,
-
+    "carousel_directory": "data/carousel/",
     "funfunct": true
 }

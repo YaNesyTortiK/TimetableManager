@@ -180,13 +180,14 @@ class Carousel:
     Класс для обработки карусели.
     При вызове возвращает путь до следующего файла.
     """
-    def __init__(self, root_dir: str, directory: str = 'data/carousel/'):
-        self.root_dir = root_dir+'/'
+    allowed_extensions = ['png', 'jpeg', 'jpg', 'webm', 'gif']
+
+    def __init__(self, directory: str = 'data/carousel/', skip_check: bool = False):
         self.directory = directory
-        self.dir_abs_path = path.abspath(self.root_dir+self.directory+'/')
-        self.files = [f for f in listdir(directory) if isfile(join(directory, f))]
-        if len(self.files) == 0:
-            raise FileNotFoundError(f'Не найдено файлов для карусели в дирректории "{directory}"')
+        self.dir_abs_path = path.abspath(self.directory+'/')
+        self.files = [f for f in listdir(directory) if isfile(join(directory, f)) and f[f.rfind('.')+1:] in self.allowed_extensions]
+        if not skip_check and len(self.files) == 0:
+            raise FileNotFoundError(f'Не найдены файлы для карусели в директории "{directory}"')
         self.sort()
         self._ind = 0
 
@@ -209,7 +210,7 @@ class Carousel:
         if index is None:
             self._ind = ind
         if absolute_path:
-            return path.abspath(self.root_dir+self.directory+self.files[ind])
+            return path.abspath(self.directory+self.files[ind])
         else:
             return self.files[ind]
     
@@ -247,7 +248,10 @@ class Carousel:
     
     def append(self, path: str):
         """Добавляет элемент"""
-        self.files.append(path)
+        if path not in self.files:
+            self.files.append(path)
+        else:
+            raise FileExistsError(f'Файл с именем "{path}" уже существует.')
 
     def remove(self, item: str):
         """Удаляет элемент (не индекс, а сам элемент)"""

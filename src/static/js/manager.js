@@ -404,7 +404,7 @@ function load_carousel_cfg() {
     carousel = data['carousel']
     carousel_after = data['carousel_after']
     carousel_delay = data['carousel_delay']
-    if (carousel) {
+    if (carousel && carousel_after > 0) {
         document.addEventListener('click', delay_carousel)
         delay_carousel()
     }

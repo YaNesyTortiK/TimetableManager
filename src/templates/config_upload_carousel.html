@@ -1,0 +1,28 @@
+{% extends "config_base.html" %}
+{% block title %}
+Редактор карусели
+{% endblock %}
+{% block content %}
+    <div class="cfg_elem" id="images">
+        <h3 class="elem_title">Загруженный контент:<p class="why inline_elem"
+            data-tooltip="Элементы будут автоматически отсортированы по названию.">(?)</p></h3>
+        {%- for image in images -%}
+            <div class="cfg_elem inline_elem">
+                <img class="img_preview" src="{{ image }}"><br>
+                <a href="send/{{ image }}">{{ image }}</a><br>
+                <button class="remove_carousel_image_btn" onclick="remove_carousel_image(this)" id="{{ image }}">Удалить</button>
+            </div>
+        {%- endfor -%}
+    </div>
+    <div class="cfg_elem" id="images">
+        <h3 class="elem_title">Загрузить:<p class="why inline_elem"
+            data-tooltip="При перетаскивании файл будет загружен автоматически.">(?)</p></h3>
+        <div class="input_field_wrap">
+            <input id="file_input_field" type="file" name="file" multiple="multiple" onchange="upload_image(this)">
+            <p id="input_field_p">Нажмите для загрузки файла или перетащите</p>
+        </div>
+    </div>
+{% endblock content %}
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/config_carousel_manager.js') }}"></script>
+{% endblock %}

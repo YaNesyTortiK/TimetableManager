@@ -352,7 +352,7 @@ def upload_carousel():
             errors.append(f'Ошибка при загрузке "{file.filename}" - произошла непредвиденная ошибка {ex}.')
     if len(errors) == 0:
         return 'Ok'
-    return abort(400, f'Ошибки:\n {"\n".join(errors)}')
+    return abort(400, 'Ошибки:\n'+"\n".join(errors))
 
 @app.route('/carousel_edit/remove/<string:path>/', methods=['GET'])
 @flask_login.login_required
@@ -370,7 +370,7 @@ def upload_carousel_remove(path):
     except Exception as ex:
         log.error(f'Произошла непредвиденная ошибка при удалении файла карусели "{path}". Ошибка: {ex}')
         return abort(500, f'Произошла непредвиденная ошибка при удалении файла карусели "{path}". Ошибка: {ex}')
-    log(f'Файл карусели "{carousel.dir_abs_path+'/'+path}" успешно удален.')
+    log(f'Файл карусели "{carousel.dir_abs_path+"/"+path}" успешно удален.')
     return 'Ok'
 
 @app.route('/carousel_edit/<string:path>/', methods=['GET'])

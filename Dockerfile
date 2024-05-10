@@ -3,6 +3,7 @@ FROM ubuntu:22.04
 RUN apt-get update
 RUN apt-get install -y python3
 RUN apt-get install -y pip
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 
 WORKDIR /app
 

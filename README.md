@@ -83,9 +83,9 @@ sudo docker run hello-world
 ```
 This command will install a test image and run it in a docker container. If there are no errors during the startup process and you see a welcome message from Docker, then the installation was successful.
 
-8. Download and start docker image
+8. Download and start docker image (Instead of `-e TZ="Etc/UTC"` set your time zone, example for Moscow: `-e TZ="Europe/Moscow"`)
 ```
-sudo docker run -d --name=TimetableManager -p 80:5000 --restart unless-stopped ghcr.io/yanesytortik/timetable-manager:latest
+sudo docker run -d --name=TimetableManager -p 80:5000 --restart unless-stopped -e TZ="Europe/Moscow" ghcr.io/yanesytortik/timetable-manager:latest
 ```
 After the image is downloaded and launched, you can [go to page](http://127.0.0.1). f everything was successful, a web page should load that says `Ошибка соединения: Internal server Error. Something happened during getting data. Error: Сервер настроен неправильно или не настроен. Свяжитесь с системным администратором`. After this, you can proceed to [initial server setup](#initial-setup)
 ![InitialCfgRequired](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/InitialCfgRequired.png?raw=true)

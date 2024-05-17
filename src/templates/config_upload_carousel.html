@@ -6,12 +6,21 @@
     <div class="cfg_elem" id="images">
         <h3 class="elem_title">Загруженный контент:<p class="why inline_elem"
             data-tooltip="Элементы будут автоматически отсортированы по названию.">(?)</p></h3>
-        {%- for image in images -%}
-            <div class="cfg_elem inline_elem">
-                <img class="img_preview" src="{{ image }}"><br>
-                <a href="send/{{ image }}">{{ image }}</a><br>
-                <button class="remove_carousel_image_btn" onclick="remove_carousel_image(this)" id="{{ image }}">Удалить</button>
-            </div>
+        {%- for file in files -%}
+            {% if file[file.rfind('.')+1:] in image_ext %}
+                <div class="cfg_elem inline_elem">
+                    <img class="img_preview" src="{{ file }}"><br>
+                    <a href="send/{{ file }}">{{ file }}</a><br>
+                    <button class="remove_carousel_image_btn" onclick="remove_carousel_image(this)" id="{{ file }}">Удалить</button>
+                </div>
+            {% else %}
+                <div class="cfg_elem inline_elem">
+                    <video class="img_preview" src="{{ file }}" muted loop autoplay></video><br>
+                    <a href="send/{{ file }}">{{ file }}</a><br>
+                    <button class="remove_carousel_image_btn" onclick="remove_carousel_image(this)" id="{{ file }}">Удалить</button>
+                </div>
+            {% endif %}
+
         {%- endfor -%}
     </div>
     <div class="cfg_elem" id="images">
@@ -21,6 +30,10 @@
             <input id="file_input_field" type="file" name="file" multiple="multiple" onchange="upload_image(this)">
             <p id="input_field_p">Нажмите для загрузки файла или перетащите</p>
         </div>
+        <p>
+            Обратите внимание! Если вы загрузите видео, то оно будет проигрываться БЕЗ ЗВУКА! Также если длительность видео превышает установленное время для автопереключения, это время будет автоматически пролено до длительности видео.
+            В случае если длительность видео меньше чем установленное время переключения, видео будет запускаться по кругу пока не произойдет автоматическое переключение.
+        </p>
     </div>
 {% endblock content %}
 {% block scripts %}

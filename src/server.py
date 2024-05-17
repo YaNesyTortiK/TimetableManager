@@ -265,8 +265,13 @@ def carousel_init():
 def carousel_data():
     data = dict(request.json)
     if config.carousel:
-        return {
-            "file": carousel(int(data['step']), carousel.index(data['current']))
+        try:
+            return {
+                "file": carousel(int(data['step']), carousel.index(data['current']))
+                }
+        except ValueError:
+            return {
+                "file": carousel[0]
             }
     return abort(400, 'Карусель отключена')
 
@@ -327,7 +332,9 @@ def upload():
 @app.route('/carousel_edit/', methods=['GET'])
 @flask_login.login_required
 def upload_carousel_render():
-    return render_template('config_upload_carousel.html', images=carousel.files, program_info=config.program_info, config=config)
+    return render_template('config_upload_carousel.html', files=carousel.files,
+                           image_ext=carousel.image_extensions, video_ext=carousel.video_extensions, 
+                           program_info=config.program_info, config=config)
 
 @app.route('/carousel_edit/', methods=['POST'])
 @flask_login.login_required
@@ -373,13 +380,13 @@ def upload_carousel_remove(path):
     log(f'Файл карусели "{carousel.dir_abs_path+"/"+path}" успешно удален.')
     return 'Ok'
 
+@app.route('/carousel/blob/<string:path>/')
 @app.route('/carousel_edit/<string:path>/', methods=['GET'])
-@flask_login.login_required
 def upload_carousel_images(path: str):
     return send_file(carousel.dir_abs_path+'/'+path)
 
+@app.route('/carousel/download/<string:path>/')
 @app.route('/carousel_edit/send/<string:path>/', methods=['GET'])
-@flask_login.login_required
 def upload_carousel_images_send(path: str):
     return send_file(carousel.dir_abs_path+'/'+path, as_attachment=True, download_name=path)
 

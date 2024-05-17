@@ -1,4 +1,7 @@
 const carousel_url = '/carousel/'
+const blobs_url = '/carousel/blob/'
+const image_types = ['png', 'jpeg', 'jpg', 'webp', 'gif']
+const video_types = ['mp4', 'webm', 'ogv']
 let current = undefined
 let next_timeout = undefined;
 
@@ -25,30 +28,41 @@ function show_carousel() {
 async function update_carousel(t) {
     let carousel = document.getElementById('carousel_data')
     if (carousel == null) return;
-    let data = await load_carousel_data(t);
-    if (data.type.includes('image')) {
-        let image = new Image()
-        image.src = URL.createObjectURL(data)
-        image.classList.add('carousel_elem')
-        carousel.innerHTML = ''
-        carousel.appendChild(image)
-    }
-    if (next_timeout !== undefined) {
-        clearTimeout(next_timeout)
-    }
-    if (carousel_delay > 0) {
-        next_timeout = setTimeout(update_carousel, carousel_delay*1000)
+    let file = await load_carousel_data(t);
+    if (image_types.includes(file.slice(file.lastIndexOf('.')+1))) {
+        carousel.innerHTML = `<img class="carousel_elem" src="${blobs_url+file+'/'}">`
+        if (next_timeout !== undefined) {
+            clearTimeout(next_timeout)
+        }
+        if (carousel_delay > 0) {
+            next_timeout = setTimeout(update_carousel, carousel_delay*1000)
+        }
+    } else if (video_types.includes(file.slice(file.lastIndexOf('.')+1))) {
+        carousel.innerHTML = `<video class="carousel_elem" src="${blobs_url+file+'/'}" autoplay muted loop>Браузер не поддерживает проигрывание видео :(</video>`
+        let vid = carousel.getElementsByClassName('carousel_elem')[0]
+        vid.addEventListener('loadeddata', ()=>{
+            if (next_timeout !== undefined) {
+                clearTimeout(next_timeout)
+            }
+            if (carousel_delay > 0) {
+                if (vid.duration < carousel_delay) {
+                    next_timeout = setTimeout(update_carousel, carousel_delay*1000)
+                } else {
+                    next_timeout = setTimeout(update_carousel, vid.duration*1000)
+                }
+            }
+        })
+    } else {
+        update_carousel('next');
     }
 }
 
 async function load_carousel_data(t) {
     if (t === 'init'){
-        current = await fetch(carousel_url)
-            .then((response)=>{return response.json().then((r)=>{return r['file']})})
-        return fetch(carousel_url+current+'/')
-            .then((response)=>{return response.blob().then((r)=>{return r})})
+        return await fetch(carousel_url)
+            .then((response)=>{return response.json().then((r)=>{current = r['file']; return r['file']})})
     } else if (t === 'prev') {
-        current = await fetch(carousel_url, {
+        return await fetch(carousel_url, {
             method: "POST",
             body: JSON.stringify({
                 "step": -1,
@@ -57,11 +71,9 @@ async function load_carousel_data(t) {
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
-        }).then((response)=>{return response.json().then((r)=>{return r['file']})})
-        return fetch(carousel_url+current+'/')
-            .then((response)=>{return response.blob().then((r)=>{return r})})
+        }).then((response)=>{return response.json().then((r)=>{current = r['file']; return r['file']})})
     } else {
-        current = await fetch(carousel_url, {
+        return await fetch(carousel_url, {
             method: "POST",
             body: JSON.stringify({
                 "step": 1,
@@ -70,9 +82,7 @@ async function load_carousel_data(t) {
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
-        }).then((response)=>{return response.json().then((r)=>{return r['file']})})
-        return fetch(carousel_url+current+'/')
-            .then((response)=>{return response.blob().then((r)=>{return r})})
+        }).then((response)=>{return response.json().then((r)=>{current = r['file']; return r['file']})})
     }
 }
 

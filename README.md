@@ -85,7 +85,7 @@ This command will install a test image and run it in a docker container. If ther
 
 8. Download and start docker image (Instead of `-e TZ="Etc/UTC"` set your time zone, example for Moscow: `-e TZ="Europe/Moscow"`)
 ```
-sudo docker run -d --name=TimetableManager -p 80:5000 --restart unless-stopped -e TZ="Europe/Moscow" ghcr.io/yanesytortik/timetable-manager:latest
+sudo docker run -d --name=TimetableManager -p 80:5000 --restart unless-stopped -e TZ="UTC" ghcr.io/yanesytortik/timetable-manager:latest
 ```
 After the image is downloaded and launched, you can [go to page](http://127.0.0.1). f everything was successful, a web page should load that says `Ошибка соединения: Internal server Error. Something happened during getting data. Error: Сервер настроен неправильно или не настроен. Свяжитесь с системным администратором`. After this, you can proceed to [initial server setup](#initial-setup)
 ![InitialCfgRequired](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/InitialCfgRequired.png?raw=true)
@@ -323,8 +323,12 @@ Schedule priority:
 
 2. Загрузить - (Upload) field for uploadinf files
 
-    * Supported file formats: 'png', 'jpeg', 'jpg', 'webm', 'gif' (`tools:storage.py:Carousel:allowed_extensions`)
+    * Supported file formats: 
+        * Images: 'png', 'jpeg', 'jpg', 'webp', 'gif' (`tools:storage.py:Carousel:image_extension`)
+        * Videos: 'mp4', 'webm', 'ogv', 'ogg' (`tools:storage.py:Carousel:video_extension`)
     * It is possible to upload multiple files at the same time
+
+Note! If you upload a video, it will play WITHOUT SOUND! Also, if the video duration exceeds the set time for auto-switching, this time will automatically extend to the video duration. If the video duration is less than the set switching time, the video will play in a circle until automatic switching occurs.
 
 # Additional functions
 Additional features can only be used after initial setup

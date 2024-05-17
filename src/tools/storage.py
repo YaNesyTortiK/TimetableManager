@@ -180,7 +180,9 @@ class Carousel:
     Класс для обработки карусели.
     При вызове возвращает путь до следующего файла.
     """
-    allowed_extensions = ['png', 'jpeg', 'jpg', 'webm', 'gif']
+    video_extensions = ['mp4', 'webm', 'ogv', 'ogg']
+    image_extensions = ['png', 'jpeg', 'jpg', 'webp', 'gif']
+    allowed_extensions = video_extensions+image_extensions
 
     def __init__(self, directory: str = 'data/carousel/', skip_check: bool = False):
         self.directory = directory

@@ -98,7 +98,7 @@ class Config:
             self.is_setup = True
         self.write_config()
 
-    def write_config(self):
+    def as_dict(self, include_credentials: bool = False) -> dict:
         data = {
             "is_setup": self.is_setup,
             "use_web_editor": self.use_web_editor,
@@ -107,9 +107,6 @@ class Config:
             "lifetime": self.lifetime,
             "host": self.host,
             "port": self.port,
-
-            "username": self.username,
-            "password": self.password,
 
             "debug": self.debug,
             "second_shift": self.second_shift,
@@ -139,5 +136,12 @@ class Config:
 
             "funfunct": self.funfunct
         }
+        if include_credentials:
+            data["username"] = self.username
+            data["password"] = self.password
+        return data
+
+    def write_config(self):
+        data = self.as_dict(include_credentials=True)
         with open(self.file, 'w', encoding='utf-8') as f: # Открытие файла через контекстный менеджер
             data = json.dump(data, f) # Загрузка данных из json формата в dict формат питона

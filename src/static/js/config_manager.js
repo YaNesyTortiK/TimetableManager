@@ -322,3 +322,71 @@ function bells_inp_type(elem) {
         `
     }
 }
+
+function export_settings() {
+    fetch('/cfg_settings/export/').then(response => response.text().then(
+        text => {
+            popup_container.innerHTML = `<div class="popup__bg" onclick="close_popup(this)"><div class="popup" onclick="this.classList.add(\'clicked\')">
+                Настройки (скопируйте эти строки):
+                <br>
+                <textarea style="font-family: monospace; height: 40vw; width: 100%; font-size: 20px;">${text}</textarea>
+            </div></div>`;
+            popupBg = popup_container.children[0];
+            popup = popupBg.children[0];
+            popupBg.classList.add('active');
+            popup.classList.add('active');
+        }
+    )).catch((error) => {
+        popup_container.innerHTML = '<div class="popup__bg" onclick="close_popup(this)"><div class="popup"><h3>Ошибка</h3>Непредвиденная ошибка: '+error.toString()+'</div></div>';
+        popupBg = popup_container.children[0];
+        popup = popupBg.children[0];
+        popupBg.classList.add('active');
+        popup.classList.add('active');
+    })
+}
+
+function import_settings_view() {
+    popup_container.innerHTML = `<div class="popup__bg" onclick="close_popup(this)"><div class="popup" onclick="this.classList.add(\'clicked\')">
+        Введите строку настроек (скопированную при экспорте):
+        <textarea class="settings_area" style="font-family: monospace; height: 40vw; width: 100%; font-size: 20px;" placeholder="Введите строки"></textarea>
+        <button onclick="import_settings(this)">Отправить</button>
+    </div></div>`;
+    popupBg = popup_container.children[0];
+    popup = popupBg.children[0];
+    popupBg.classList.add('active');
+    popup.classList.add('active');
+}
+function import_settings(elem) {
+    text = elem.parentElement.getElementsByClassName('settings_area')[0].value
+    fetch('/cfg_settings/import/', {
+        method: 'POST',
+        body: JSON.stringify({
+            settings: text
+          }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    }).then(response => {
+        if (response.ok) {
+            popup_container.innerHTML = '<div class="popup__bg" onclick="close_popup(this)"><div class="popup" onclick="this.classList.add(\'clicked\')">Успешно! Перезагрузите сервер.</div></div>';
+            popupBg = popup_container.children[0];
+            popup = popupBg.children[0];
+            popupBg.classList.add('active');
+            popup.classList.add('active');
+        } else {
+            response.text().then(text => {
+                popup_container.innerHTML = '<div class="popup__bg" onclick="close_popup(this)"><div class="popup"><h3>Ошибка</h3>Непредвиденная ошибка: '+text+'</div></div>';
+                popupBg = popup_container.children[0];
+                popup = popupBg.children[0];
+                popupBg.classList.add('active');
+                popup.classList.add('active');
+            })
+        }
+    }).catch((error) => {
+        popup_container.innerHTML = '<div class="popup__bg" onclick="close_popup(this)"><div class="popup"><h3>Ошибка</h3>Непредвиденная ошибка: '+error.toString()+'</div></div>';
+        popupBg = popup_container.children[0];
+        popup = popupBg.children[0];
+        popupBg.classList.add('active');
+        popup.classList.add('active');
+    })
+}

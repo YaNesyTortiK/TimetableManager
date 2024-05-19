@@ -29,6 +29,9 @@
         {% else %}
             <p>Писать логи в консоль: <input type="checkbox" id="log_to_console" onchange="unsaved()"></p>
         {% endif %}
+        <button class="inline_elem tool-btn" onclick="export_settings()">Экспорт настроек</button>
+        <button class="inline_elem tool-btn" onclick="import_settings_view()">Импорт настроек</button>
+        <p><b>ВНИМАНИЕ!</b> При импорте или экспорте настроек логин и пароль <b><u>НЕ ОБРАБАТЫВАЮТСЯ!</u></b> (при экспорте пароль не будет включен в экспортируемые данные, а при экспорте, в случае если в строке оказались логин или пароль они будут пропущены)</p>
     </div>
     <div class="cfg_elem">
         <h3 class="elem_title">Настройки данных</h3>

@@ -7,6 +7,7 @@ import re
 import subprocess
 import json
 import io
+import base64
 
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -426,6 +427,32 @@ def chng_psswd():
     log.warning("Неудачная попытка изменения пароля!")
     return render_template('config_psswd_change.html', not_valid=True)
 
+@app.route('/cfg_settings/export/')
+@flask_login.login_required
+def export_settings():
+    settings = config.as_dict(include_credentials=False)
+    log('Экспорт настроек')
+    settings = base64.b64encode(json.dumps(settings).encode('utf-8')).decode('utf-8')
+    s = ''
+    for i in range(0, len(settings), 25):
+        s += settings[i:i+25 if i+25 < len(settings) else len(settings)]+'\n'
+    return s
+
+@app.route('/cfg_settings/import/', methods=['POST'])
+@flask_login.login_required
+def import_settings():
+    data = dict(request.json)
+    try:
+        settings = json.loads(base64.b64decode(data['settings'].replace('\n', '')).decode('utf-8'))
+    except json.JSONDecodeError as ex:
+        log.error('Ошибка JSONDecodeError при попытке импорта настроек. '+str(ex))
+        return abort(500, 'Ошибка перевода в json')
+    except Exception as ex:
+        log.error('Произошла непредвиденная ошибка base64. Exception: '+str(ex))
+        return abort(400, 'Произошла непредвиденная ошибка base64. Проверьте правильность ввода строк. Exception: '+str(ex))
+    config.write_config_from_dict(settings)
+    log.warning('Импорт настроек')
+    return 'OK'
 
 @app.route('/download/<string:arg>/')
 @flask_login.login_required

@@ -37,7 +37,8 @@ storage = Storage(config)
 log = Logger(config.log_filename, config.log_to_console)
 log('Запуск сервера')
 try:
-    carousel = Carousel(config.carousel_directory)
+    if config.carousel:
+        carousel = Carousel(config.carousel_directory)
 except FileNotFoundError:
     config.carousel = False
     log.warning('Не найдены данные для карусели. Карусель автоматически отключена.')

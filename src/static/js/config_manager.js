@@ -349,7 +349,7 @@ function import_settings_view() {
     popup_container.innerHTML = `<div class="popup__bg" onclick="close_popup(this)"><div class="popup" onclick="this.classList.add(\'clicked\')">
         Введите строку настроек (скопированную при экспорте):
         <textarea class="settings_area" style="font-family: monospace; height: 40vw; width: 100%; font-size: 20px;" placeholder="Введите строки"></textarea>
-        <button onclick="import_settings(this)">Отправить</button>
+        <button onclick="import_settings(this)" class="tool-btn">Отправить</button>
     </div></div>`;
     popupBg = popup_container.children[0];
     popup = popupBg.children[0];

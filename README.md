@@ -218,6 +218,8 @@ After this, you can go to the address [127.0.0.1:5000](127.0.0.1:5000) and check
 3. Отладка - enable debugging mode (disabled by default). Affects the behavior of the program if an unexpected error occurs. **Recommended for testing purposes only**.
 4. Файл для логов - a file where actions related to server management and errors that occur will be recorded (by default `log.txt`). Sometimes you will need to clear the logs to prevent using too much disk space. [Log management](#log-management)
 5. output logs to the console (disabled by default). Duplicates the information written in log file to the console.
+6. Экспорт настроек - (Export settings) when you click the button, a pop-up window with text will open. Copy this text and save it to a text file or send it as is without changes. <b>Please note that passwords and logins are NOT exported.</b>
+7. Импорт настроек - (Import settings) when you click the button, a pop-up window will open with a text input field. Copy the text that you received when exporting the settings, paste it into the text field and click on the send button. If you see the line `Успешно! Перезагрузите сервер.` This means the settings have been successfully loaded and applied. It is recommended to restart the server. <b>Please note that passwords and logins are NOT imported.</b>
 
 ### Data Settings
 ![DataSettings](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/DataSettings.png?raw=true)

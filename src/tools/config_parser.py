@@ -68,9 +68,9 @@ class Config:
 
     program_info = {
         'name': 'Timetable Manager',
-        'version': '1.4.1',
+        'version': '1.4.2',
         'modification': 'Stable',
-        'saved': '17.05.2024 19:05 UTC+3',
+        'saved': '20.05.2024 00:51 UTC+3',
         'contact_info': 'https://github.com/YaNesyTortiK/TimetableManager'
     }
 

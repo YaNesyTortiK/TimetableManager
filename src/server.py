@@ -8,6 +8,7 @@ import subprocess
 import json
 import io
 import base64
+from hashlib import sha256
 
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -91,9 +92,8 @@ def request_loader(request):
 def login():
     if request.method == 'GET':
         return render_template('login.html')
-
     handle = request.form['handle']
-    if handle == config.username and request.form['password'] == config.password:
+    if handle == config.username and sha256(request.form['password'].encode('utf-8')).hexdigest() == config.password:
         user = User()
         user.id = handle
         flask_login.login_user(user)
@@ -419,9 +419,9 @@ def chng_psswd_view():
 @app.route("/cfg_change_psswd/", methods=['POST'])
 @flask_login.login_required
 def chng_psswd():
-    if request.form['password'] == config.password and request.form['password_new'] == request.form['password_new_check'] != request.form['password']:
+    if sha256(request.form['password'].encode('utf-8')).hexdigest() == config.password and request.form['password_new'] == request.form['password_new_check'] != request.form['password']:
         flask_login.logout_user()
-        config.password = request.form['password_new']
+        config.password = sha256(request.form['password_new'].encode('utf-8')).hexdigest()
         config.write_config()
         log.warning("Изменен пароль!")
         return redirect('/config/')

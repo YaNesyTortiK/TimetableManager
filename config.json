@@ -7,7 +7,7 @@
     "host": "0.0.0.0",
     "port": 5000,
     "username": "admin",
-    "password": "admin",
+    "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
     "debug": false,
     "second_shift": [
         "6"

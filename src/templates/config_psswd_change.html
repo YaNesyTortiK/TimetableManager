@@ -10,7 +10,7 @@
     <div class="login_container">
         <div class="login_container_inner">
             {% if not_valid %}
-                <p class="invalid_form_data">Неверное имя пользователя или пароль!</p>
+                <p class="invalid_form_data">Неверный текущий пароль или новый пароль не совпадает с повторением!</p>
             {% endif %}
             <form class="login_form" action="/cfg_change_psswd/" method="POST">
                 <div class="form_element">

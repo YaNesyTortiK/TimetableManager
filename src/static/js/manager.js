@@ -13,6 +13,7 @@ let currently_loaded = undefined;
 let carousel = false;
 let carousel_after = undefined;
 let carousel_delay = undefined;
+let carousel_interactive = undefined;
 let delay_carousel_timeout = undefined;
 
 function load_parallel(elem) {
@@ -404,6 +405,7 @@ function load_carousel_cfg() {
     carousel = data['carousel']
     carousel_after = data['carousel_after']
     carousel_delay = data['carousel_delay']
+    carousel_interactive = data['carousel_interactive']
     if (carousel && carousel_after > 0) {
         document.addEventListener('click', delay_carousel)
         delay_carousel()

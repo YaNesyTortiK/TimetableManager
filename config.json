@@ -50,5 +50,6 @@
     "carousel_delay": 15,
     "carousel_mobile": false,
     "carousel_directory": "data/carousel/",
+    "carousel_interactive": true,
     "funfunct": true
 }

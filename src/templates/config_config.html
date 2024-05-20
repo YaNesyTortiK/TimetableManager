@@ -239,6 +239,8 @@ div class:lesson - строка содержащая урок" style="width: 100
                 data-tooltip="Через какой промежуток времени карусель сама переключится на следующий файл. (0 для отключения авто-переключения)">(?)</p><br>
         <p class="inline_elem">Разрешить на мобильных устройствах: <input class="inline_elem" type="checkbox" {% if config.carousel_mobile %}checked{% endif %} id="carousel_mobile" onchange="unsaved()"><p class="why inline_elem"
             data-tooltip="При включении этого параметра на мобильном устройстве (устройство под управлением android/ios) будет недоступна функция карусели и отключен автоматический запуск карусели. (Рекомендуется отключить карусель для мобильных устройств)">(?)</p><br>
+        <p class="inline_elem">Интерактивная карусель: <input class="inline_elem" type="checkbox" {% if config.carousel_interactive %}checked{% endif %} id="carousel_interactive" onchange="unsaved()"><p class="why inline_elem"
+            data-tooltip="При включенном параметре, в интерфейсе карусели появляется возможность листать содержимое. При отключенном параметре нет возможности управлять медиафайлами вручную, а любое нажатие приводит к закртыию интерфейса.">(?)</p><br>
         <p lass="inline_elem"><a href="/carousel_edit/">Редактор карусели</a></p>
     </div>
     <button id="save_btn" onclick="save_data()">Сохранить</button>

@@ -7,10 +7,18 @@ let next_timeout = undefined;
 
 function show_carousel() {
     if (document.getElementById('carousel_data') !== null) return;
-    popup_container.innerHTML = `<div class="popup__bg" onclick="close_popup(this); carousel_closed();"><div class="carousel_popup" onclick="this.classList.add('clicked')">
-<button class="inline_elem carousel_arrow left" onclick="update_carousel('prev')"><</button>
+    let interact = '';
+    let l_arrow = '';
+    let r_arrow = '';
+    if (carousel_interactive) {
+        interact = `onclick="this.classList.add('clicked')"`
+        l_arrow = `<button class="inline_elem carousel_arrow left" onclick="update_carousel('prev')"><</button>`
+        r_arrow = `<button class="inline_elem carousel_arrow right" onclick="update_carousel()">></button>`
+    }
+    popup_container.innerHTML = `<div class="popup__bg" onclick="close_popup(this); carousel_closed();"><div class="carousel_popup" ${interact}>
+${l_arrow}
 <div class="inline_elem" id="carousel_data"></div>
-<button class="inline_elem carousel_arrow right" onclick="update_carousel()">></button>
+${r_arrow}
     </div></div>`;
     popupBg = popup_container.children[0];
     popup = popupBg.children[0];

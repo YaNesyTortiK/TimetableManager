@@ -301,9 +301,9 @@ Schedule priority:
 ![CarouselInterface](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/CarouselInterface.png?raw=true)
 
     * The image will be resized to fit the interface (while maintaining the aspect ratio)
-    * To go to the next picture, click on the right side of the picture
-    * To go to the previous picture, click on the left side of the picture
-    * To exit the interface, click on the dark part around
+    * To go to the next picture, click on the right side of the picture (if the interactive carousel is activated)
+    * To go to the previous picture, click on the left side of the picture (if the interactive carousel is activated)
+    * To exit the interface, click on the dark part around (or anywhere if the interactive carousel is activated)
 
 2. Директория с файлами - (directory with files) the folder where all the pictures that will be shown are stored (by default `data/carousel/`).
 
@@ -313,7 +313,9 @@ Schedule priority:
 
 5. Разрешить на мобильных устройствах - (Allow on mobile devices) whether the carousel will be enabled on mobile devices (Disabled by default). (A mobile device will be considered a device that has: '.*Android.*|.*webOS.*|.*iPhone.*|.*iPad.*|.*iPod.*|.*BlackBerry. *|.*IEMobile.*|.*Opera Mini.*' in the request header (recognition function: `server.py:utility_processor`)). It is recommended to disable this option to reduce the load on the network and device.
 
-6. Редактор карусели - (Carousel editor) link to [redactor interface](#carousel-redactor)
+6. Интерактивная карусель - enables interactivity (enabled by default). Enables the ability to interact with the display of media files in the carousel interface. When this option is disabled, the interface does not have the ability to list through files and the interface closes with any click.
+
+7. Редактор карусели - (Carousel editor) link to [redactor interface](#carousel-redactor)
 
 ### Carousel redactor
 ![CarouselRedactor](https://github.com/YaNesyTortiK/MyGlobalAssets/blob/main/CarouselRedactor.png?raw=true)

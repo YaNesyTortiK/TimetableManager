@@ -65,12 +65,13 @@ class Config:
     carousel_delay = 15 # Задержка между переключениями фотографий/видео в карусели (видео проигрываются полностью, независимо от этого параметра)
     carousel_mobile = False # Разрешить карусель на мобильных устройствах
     carousel_directory = 'data/carousel/' # Директория с файлами для карусели
+    carousel_interactive = True # Будет ли возможность вручную листать карусель. (При отключенном параметре при любом нажатии на карусель она закроется)
 
     program_info = {
         'name': 'Timetable Manager',
-        'version': '1.4.2',
+        'version': '1.4.3',
         'modification': 'Stable',
-        'saved': '20.05.2024 00:51 UTC+3',
+        'saved': '20.05.2024 23:37 UTC+3',
         'contact_info': 'https://github.com/YaNesyTortiK/TimetableManager'
     }
 
@@ -133,6 +134,7 @@ class Config:
             "carousel_delay": self.carousel_delay,
             "carousel_mobile": self.carousel_mobile,
             "carousel_directory": self.carousel_directory,
+            "carousel_interactive": self.carousel_interactive,
 
             "funfunct": self.funfunct
         }

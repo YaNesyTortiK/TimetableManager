@@ -15,7 +15,7 @@
                 </div>
             {% else %}
                 <div class="cfg_elem inline_elem">
-                    <video class="img_preview" src="{{ file }}" controls="auto"></video><br>
+                    <video class="img_preview" src="{{ file }}" controls="auto" preload="metadata"></video><br>
                     <a href="send/{{ file }}">{{ file }}</a><br>
                     <button class="remove_carousel_image_btn" onclick="remove_carousel_image(this)" id="{{ file }}">Удалить</button>
                 </div>

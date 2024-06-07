@@ -423,7 +423,7 @@ def chng_psswd():
         flask_login.logout_user()
         config.password = sha256(request.form['password_new'].encode('utf-8')).hexdigest()
         config.write_config()
-        log.warning("Изменен пароль!")
+        log.important("Изменен пароль!")
         return redirect('/config/')
     log.warning("Неудачная попытка изменения пароля!")
     return render_template('config_psswd_change.html', not_valid=True)
@@ -452,7 +452,7 @@ def import_settings():
         log.error('Произошла непредвиденная ошибка base64. Exception: '+str(ex))
         return abort(400, 'Произошла непредвиденная ошибка base64. Проверьте правильность ввода строк. Exception: '+str(ex))
     config.write_config_from_dict(settings)
-    log.warning('Импорт настроек')
+    log.important('Импорт настроек')
     return 'OK'
 
 @app.route('/download/<string:arg>/')
@@ -502,7 +502,7 @@ def download_data(arg: str):
 def clear_logs():
     with open(config.log_filename, 'w') as f:
         f.write('---\n')
-    log.warning("Произведена очистка лога")
+    log.important("Произведена очистка лога")
     return 'Файл лога успешно очищен'
 
 @app.route('/custom_function/', methods=['POST'])
@@ -583,7 +583,7 @@ def cfg_remove_all_files():
     files = get_filenames(config.directory)
     for file in files:
         os.remove(config.directory+file)
-    log.warning(f'Очищены все файлы с расписанием: ({"; ".join(files)})')
+    log.important(f'Очищены все файлы с расписанием: ({"; ".join(files)})')
     return redirect('/config/')
 
 @app.route('/time/')

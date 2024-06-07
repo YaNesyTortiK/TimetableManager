@@ -90,16 +90,18 @@ class Config:
 
     def write_config_from_dict(self, data):
         for key, value in data.items():
-            if key not in ['password', 'username', 'program_info', 'custom_functions'] and value != None:
+            if key not in ['password', 'username', 'program_info', 'custom_functions', 'exp'] and value != None:
                 if key == 'initial_file':
                     setattr(self, key, '.\\schemas\\'+value)
                 else:
                     setattr(self, key, value)
+        if 'exp' in data.keys() and 'custom_functions' in data.keys(): # Если есть флаг, что данные были экпортированы
+            setattr(self, 'custom_functions', data['custom_functions'])
         if not self.is_setup: # Если впервые изменена конфигурация
             self.is_setup = True
         self.write_config()
 
-    def as_dict(self, include_credentials: bool = False) -> dict:
+    def as_dict(self, include_credentials: bool = False, include_export_flag: bool = False) -> dict:
         data = {
             "is_setup": self.is_setup,
             "use_web_editor": self.use_web_editor,
@@ -141,6 +143,8 @@ class Config:
         if include_credentials:
             data["username"] = self.username
             data["password"] = self.password
+        if include_export_flag: # Добавить флаг экспорта
+            data['exp'] = True
         return data
 
     def write_config(self):

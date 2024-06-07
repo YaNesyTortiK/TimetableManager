@@ -27,7 +27,7 @@ ROOT_DIR = os.path.dirname(
 config = Config('config.json')
 
 app = Flask(__name__) # Инициализация сервера
-app.config['SECRET_KEY'] = uuid.uuid4().hex # Установка ключа для системы сессий
+app.config['SECRET_KEY'] = sha256(str(uuid.getnode()).encode()).hexdigest() # Установка ключа для системы сессий
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -431,7 +431,7 @@ def chng_psswd():
 @app.route('/cfg_settings/export/')
 @flask_login.login_required
 def export_settings():
-    settings = config.as_dict(include_credentials=False)
+    settings = config.as_dict(include_credentials=False, include_export_flag=True)
     log('Экспорт настроек')
     settings = base64.b64encode(json.dumps(settings).encode('utf-8')).decode('utf-8')
     s = ''

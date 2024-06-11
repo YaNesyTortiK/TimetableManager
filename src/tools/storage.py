@@ -1,4 +1,4 @@
-from src.tools.table_parser import ClassicParser, save_data_to_table
+from src.tools.table_parser import ClassicParser, AdaptiveParser, save_data_to_table
 from src.tools.logger import Logger
 from datetime import datetime, timedelta, time
 from shutil import copy2
@@ -34,7 +34,7 @@ class Storage:
         if file: # Если файл указан
             try: # Попытка получения данных
                 self._updated = datetime.now() # Обновление даты обновления данных
-                parser = ClassicParser(filepath=file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
+                parser = AdaptiveParser(filepath=file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
                                        short_names=self._config.short, full_names=self._config.full, second_shift_delay=self._config.second_shift_delay)
                 self._data = parser.data # Получение данных
                 self.log(f"Глобальное расписание успешно загружено из файла \"{file}\".")
@@ -56,7 +56,7 @@ class Storage:
                 else:
                     try: # Попытка получения данных
                         self._updated = datetime.now()# Обновление даты обновления данных
-                        parser = ClassicParser(filepath=self._config.directory+files[0], groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
+                        parser = AdaptiveParser(filepath=self._config.directory+files[0], groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
                                                  short_names=self._config.short, full_names=self._config.full, second_shift_delay=self._config.second_shift_delay)
                         self._data = parser.data # Получение данных
                         self.log(f"Глобальное расписание успешно загружено из файла \"{self._config.directory+files[0]}\".")
@@ -76,7 +76,7 @@ class Storage:
 
     @property
     def default_data(self):
-        parser = ClassicParser(filepath=self._config.schema_file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
+        parser = AdaptiveParser(filepath=self._config.schema_file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
                            short_names=self._config.short, full_names=self._config.full, second_shift_delay=self._config.second_shift_delay)
         return parser.data
     

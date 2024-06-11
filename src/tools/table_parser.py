@@ -1,6 +1,7 @@
 import openpyxl
 from src.tools.parser_ods import Parser
 from openpyxl.styles import Alignment, Font
+import re
 
 class Settings:
     alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' # Алфавит для перебора столбцов
@@ -122,9 +123,9 @@ class ParserABC():
                             "Матем 208", 
                             "Русск 309"
                             ], # Если урок есть в short_names, то оно заменится на соответсвующее значение
-                        'num': "0",
-                        'true_num': "6", # Если параллель на второй смене, то её номер будет уменьшен для удобного просмотра но в программе нужно точное показание
-                        'color': "FFFF0000",
+                        'num': 0,
+                        'true_num': 6, # Если параллель на второй смене, то её номер будет уменьшен для удобного просмотра но в программе нужно точное показание
+                        'color': "#000000",
                         'data': [ Данные для представления на сервере конфигурации (оригинальные)
                                 {
                                     'lesson': 'Матем',
@@ -151,8 +152,8 @@ class ParserABC():
                             'val': "Матем Антонов А.А. 208\nРусск Максимов Б.Б. 309",
                                 Если урок есть в full_names, то оно замениться
                                 пример: Матем -> Математика
-                            'num': '0',
-                            'color': "FFFF0000",
+                            'num': 0,
+                            'color': "#FF0000", # Красный цвет
                             'klassname': '5а',
                             'kab': '208',
                             'short': "Матем 208\nРусск 309"
@@ -165,12 +166,20 @@ class ParserABC():
                 ...
             },
             'settings': {
-                'klasses': [],
-                'days': []
+                'klasses': {
+                    '5': ['5а', '5б'],
+                    ...
+                },
+                'days': {
+                    'Пн': {
+                        1: 2 # Номер урока: строка в таблице
+                        ...
+                    }
+                }
             }
         }
         """
-        raise NotImplementedError('Данный класс является шаблоном или наследовавщий класс не переопределил данную функцию.')
+        raise NotImplementedError('Данный класс является шаблоном или наследовавший класс не переопределил данную функцию.')
     
     @property
     def data(self) -> dict:
@@ -178,26 +187,64 @@ class ParserABC():
         Returns data parsed from file.
         """
         return self._data
-    
+
+    @property
+    def workbook(self):
+        if self.file[self.file.rfind('.')+1:] in ['xls', 'xlsx']:
+            return openpyxl.load_workbook(self.file) # Открываем файл таблицы
+        elif self.file[self.file.rfind('.')+1:] == 'ods':
+            return Parser(self.file)
+
     def reparse(self) -> None:
         self._data = self.parse()
+    
+    def prepare_data(self) -> dict:
+        """
+        Генерирует чистый словарь с данными:
+        {
+            '5а': {
+                'Пн': {
+                    1: ['Матем Иванов А.А. 123', "#000000"] # Строка и цвет
+                    ...
+                }
+            }
+            '6а': { # Вторая смена
+                'Пн': {
+                    1: [None, "#000000"] # None - нет значения
+                    ...
+                    6: ['Матем Иванов А.А. 123', "#000000"] # Строка и цвет
+                }
+            }
+        }
+        """
+        res = {}
+        wb = self.workbook
+        sheet = wb.active # Получаем активный лист
+        if sheet is None: # Если нет активного листа
+            sheet = wb.worksheets[0] # Принимаем первый лист за активный
+        klasses, days = Settings(wb).settings # Получаем параметры таблицы
+        for klass, col in klasses.items():
+            res[klass] = {}
+            for day, pointers in days.items():
+                res[klass][day] = {}
+                for lesson, row in pointers.items():
+                    color = get_color(wb, f'{col}{row}')
+                    val = sheet[f'{col}{row}'].value
+                    res[klass][day][lesson] = [val, color]
+        return res
 
 class ClassicParser(ParserABC):
     def __init__(self, filepath: str, groups: dict[str, list], allowed_days: list, second_shift: list = [], second_shift_delay: int = 6, short_names: dict = {}, full_names: dict = {}) -> None:
         super().__init__(filepath, groups, allowed_days, second_shift, second_shift_delay, short_names, full_names)
 
     def parse(self) -> dict:
-        file = self.file
         groups = self.groups
         allowed_days = self.allowed_days
         second_shift = self.second_shift
         second_shift_delay = self.second_shift_delay
         short_names = self.short_names
         full_names = self.full_names
-        if file[file.rfind('.')+1:] in ['xls', 'xlsx']:
-            wb = openpyxl.load_workbook(file) # Открываем файл таблицы
-        elif file[file.rfind('.')+1:] == 'ods':
-            wb = Parser(file)
+        wb = self.workbook
         sheet = wb.active # Получаем активный лист
         if sheet is None: # Если нет активного листа
             sheet = wb.worksheets[0] # Принимаем первый лист за активный
@@ -456,6 +503,284 @@ class ClassicParser(ParserABC):
         nums = sorted([x for x in klasses if x.isdigit()], key=lambda x: int(x) if type(x) != int else x)
         words = sorted([x for x in klasses if not x.isdigit()])
         return nums+words
+    
+class AdaptiveParser(ParserABC):
+    def __init__(self, filepath: str, groups: dict[str, list], allowed_days: list, second_shift: list = [], second_shift_delay: int = 6, short_names: dict = {}, full_names: dict = {}) -> None:
+        super().__init__(filepath, groups, allowed_days, second_shift, second_shift_delay, short_names, full_names)
+    
+    def parse(self) -> dict:
+        wb = self.workbook
+        sheet = wb.active # Получаем активный лист
+        if sheet is None: # Если нет активного листа
+            sheet = wb.worksheets[0] # Принимаем первый лист за активный
+        klasses, days = Settings(wb).settings # Получаем параметры таблицы
+        
+        parallels = {}
+        for klass in klasses.keys(): # Распределение классов по параллелям
+            for group, ingroup in self.groups.items():
+                if klass in ingroup:
+                    if group not in parallels.keys():
+                        parallels[group] = []
+                    if klass not in parallels[group]:
+                        parallels[group].append(klass)
+                    break
+            else:
+                # Если класс не определен в группу
+                if klass[:-1] not in parallels.keys():
+                    parallels[klass[:-1]] = []
+                parallels[klass[:-1]].append(klass)
+        
+        for par in parallels.keys():
+            parallels[par] = sorted(parallels[par])
+
+        better_second_shift = []
+        for group in self.second_shift:
+            if group in parallels.keys():
+                for item in parallels[group]:
+                    better_second_shift.append(item)
+
+        clean_data = self.prepare_data()
+        lessons = {}
+        teachers = {}
+        
+        for klass, days in clean_data.items():
+            lessons[klass] = {}
+            for day, data in days.items():
+                if day not in self.allowed_days:
+                    continue # Если день не входит в allowed_days - пропускаем
+                lessons[klass][day] = []
+                for num, value in data.items(): # где value=[строка из таблицы, цвет]
+                    if value[0] is None: # Если нет даннных - пропускаем
+                        continue
+                    cur = {
+                        'val': [],
+                        'short': [],
+                        'true_num': int(num),
+                        'num': int(num-self.second_shift_delay) if klass in better_second_shift else int(num),
+                        'color': value[1],
+                        'data': []
+                    }
+                    included_teachers = [] # [{'teacher': '', 'klass': '', kab: ''}]
+                    for part in value[0].split('\n'):
+                        parsed = self._parse_value(part)
+                        cur['val'].append(
+                            str(self.full_names[parsed['lesson']] if parsed['lesson'] in self.full_names.keys() else parsed['lesson']) + ' ' + \
+                            str(parsed['teacher']) + ' ' + \
+                            str(parsed['kab'])
+                        )
+                        similar = False
+                        if len(cur['data']) > 0: # Проверка на совпадение
+                            if cur['data'][-1]['lesson'] == parsed['lesson']: # Если урок совпадает с предыдущим
+                                cur['short'][-1] += ' '+parsed['kab']
+                                similar = True
+                        if not similar:
+                            cur['short'].append(
+                                str(self.short_names[parsed['lesson']] if parsed['lesson'] in self.short_names.keys() else parsed['lesson']) + ' ' +\
+                                str(parsed['kab'])
+                            )
+                        cur['data'].append(parsed)
+                        if parsed['teacher'] != "":
+                            included_teachers.append({
+                                'teacher': parsed['teacher'],
+                                'klass': klass,
+                                'kab': parsed['kab']
+                            })
+                    # Генерация учительского расписания
+                    for teacher_data in included_teachers:
+                        if teacher_data['teacher'] not in teachers.keys():
+                            teachers[teacher_data['teacher']] = {}
+                        if day not in teachers[teacher_data['teacher']].keys():
+                            teachers[teacher_data['teacher']][day] = []
+                        teachers[teacher_data['teacher']][day].append({
+                            'val': cur['val'],
+                            'short': cur['short'],
+                            'color': value[1],
+                            'num': num,
+                            'klassname': teacher_data['klass'],
+                            'kab': teacher_data['kab']
+                        })
+                            
+                    lessons[klass][day].append(cur)
+
+        return {
+            "weekdays": [i for i in self.allowed_days if i in days.keys()],
+            "klasses": parallels,
+            "lessons": self._beautify_table(lessons, parallels, better_second_shift),
+            "teachers": self._sort_teacher_table(teachers),
+            "settings": {
+                "klasses": parallels,
+                "days": days
+            }
+        }
+
+    def _parse_value(self, value: str):
+        teacher_mask = re.compile(r"([ .,]|^)[А-ЯA-Z]{1}[а-яa-z]{0,}[ .,][А-ЯA-Z]{1}[ .,][А-ЯA-Z]{1}([ .,]|$)") # Выражения для поиска учителя в строке (см. в примерах ниже)
+        """
+        Парсинг отдельной строки с данными. Примеры входа-выхода:
+        Обратите внимание, что для правильной 'обработки' учителя, первый символ фамилии и инициалов должен быть большой буквой. (Учителей надо уважать)
+        1: 
+            In: "Матем Иванов А.А. 123"
+            Out: {
+                "lesson": "Матем",
+                "teacher": "Иванов А.А.",
+                "kab": "123"
+            }
+        2: 
+            In: "Матем 123"
+            Out: {
+                "lesson": "Матем",
+                "teacher": "",
+                "kab": "123"
+            }
+        3: 
+            In: "Матем"
+            Out: {
+                "lesson": "Матем",
+                "teacher": "",
+                "kab": ""
+            }
+        4: 
+            In: "Русский язык" # В данном случае 'язык' не будет являться кабинетом, так как не содержит цифр
+            Out: {
+                "lesson": "Русский язык",
+                "teacher": "",
+                "kab": ""
+            }
+        5:
+            In: "Русский язык111" # В данном случае 'язык111' будет являться кабинетом, так как содержит цифры
+            Out: {
+                "lesson": "Русский",
+                "teacher": "",
+                "kab": "язык111"
+            }
+        6: 
+            In: "Русский Иванов А.А." # В данном случае Иванов А.А. совпадает с регулярным выражением:
+                r"([ .,]|^)[А-ЯA-Z]{1}[а-яa-z]{0,}[ .,][А-ЯA-Z]{1}[ .,][А-ЯA-Z]{1}([ .,]|$)"
+                Другие совпадения: Иванов А.А ; Иванов.А.А. ; Иванов.А.А ; 
+            Out: {
+                "lesson": "Русский",
+                "teacher": "Иванов А.А.",
+                "kab": ""
+            }
+        7: 
+            In: "Музыка актовый зал" # В данном случае 'актовый зал' будет являться кабинетом, только в случае, если 'Музыка' будет являться ключом в short_names или full_names
+            Out: {
+                "lesson": "Музыка",
+                "teacher": "",
+                "kab": "актовый зал"
+            }
+        8: 
+            In: "Музыка актовый зал" # В данном случае 'Музыка' не является ключом в short_names или full_names, следовательно вся строка будет считаться уроком
+            Out: { 
+                "lesson": "Музыка актовый зал",
+                "teacher": "",
+                "kab": ""
+            }
+        9: 
+            In: "Музыка Иванова А.А. актовый зал" # В данном случае 'музыка' не обязательно должна находится в ключах short_names или full_names, так как учитель считается разделителем между уроком и кабинетом
+            Out: { 
+                "lesson": "Музыка",
+                "teacher": "Иванова А.А.",
+                "kab": "актовый зал"
+            }
+        """
+        res = {
+            "lesson": "",
+            "teacher": "",
+            "kab": ""
+        }
+        value = value.strip() # Очищаем строку от начальных и конечных пробелов и ненужных переносов строк
+        if len(value.split(' ')) == 1: # Если в строке только одно слово (разделение пробелом)
+            res['lesson'] = value # Вся строка будет являться уроком
+            return res # Возвращаем результат с пустыми 'teacher' и 'kab'
+        if any([x.isnumeric() for x in value.split(' ')[-1]]): # Если последнее слово (разделение пробелом) в строке содержит цифры
+            res['kab'] = value.split(' ')[-1] # Записываем последнее слово как кабинет
+            value = value[:value.rfind(' ')] # Убираем из строки последнее слово(кабинет) (чтобы не мешало, не ну а че оно)
+        if re.search(teacher_mask, value) is None: # Если regex не нашел совпадение по 'маске учителя' (не указан учитель)
+            if res['kab'] == "": # Если уабинет еще не выявлен
+                # Проверяем наличие одного из уроков описанных в short_names или full_names для выделения возможного кабинета
+                for possible_lesson in set(list(self.short_names.keys())+list(self.full_names.keys())):
+                    if possible_lesson.lower()+' ' in value.lower(): # Если найдена подстрока (добавлен пробел, чтобы обработать окончания) (переведено в нижний регистр, чтобы исправить возможные опечатки по регистру)
+                        temp_val = value.lower().replace(possible_lesson.lower(), '~') # Создаем временную строку с вырезанным возможным уроком
+                        if temp_val[0] == '~': # Проверяем, что строка начиналась с данного урока, чтобы избежать ложного совпадения (к примеру possible_lesson="музыка" является подстрокой temp_val="классическая музыка прошлого века", однако если отбросить "прошлого века" в кабинет, может случится недопонимание)
+                            res['kab'] = temp_val[1:].strip() # Записываем кабинет в результат
+                            value = value[:value.find(res['kab'])].strip() # Убираем кабинет из строки
+                            break # Выходим из цикла, так как уже найдено
+            res['lesson'] = value.strip() # Записываем всю строку (оставшуюся, если был вырезан кабинет) как урок
+            return res # Возвращаем результат с пустым полем "teacher"
+        if re.fullmatch(teacher_mask, value.strip()): # Если строка полностью удовлетворяет 'маске учителя' (Нет других символов)
+            res['lesson'] = value.strip() # Считаем, что такая ситуация некорректна и записываем всю строку как урок
+            return res # Возвращаем результат с пустым полем "teacher"
+        # Если до этого не был возвращен результат
+        res['teacher'] = re.search(teacher_mask, value).group().strip()
+        res['lesson'] = value[:re.search(teacher_mask, value).start()].strip()
+        temp = value[re.search(teacher_mask, value).end():].strip()
+        res['kab'] = temp+(' ' if temp != "" else "" + res['kab'] if res['kab'] != "" else "") # Считаем строку после учителя кабинетом (даже если она уже была задана) (Добавляем старое значение через пробел, так как могло обрезать ранее)
+        return res
+
+    def _beautify_table(self, data: dict, parallels: dict, better_second_shift: list) -> dict:
+        """
+        Добавляет пустые уроки, чтобы сравнять параллели по количеству уроков для более удобного просмотра.
+        Принимает словарь lessons и parallels
+        Возвращает словарь lessons
+        """
+        parallels_data = {} # Словарь из: {параллель: {день: [минимальный урок (true_num), максимальный урок (true_num)]}}
+        for parallel in parallels:
+            parallels_data[parallel] = {}
+            for day in self.allowed_days:
+                parallels_data[parallel][day] = [99, -99]
+        
+        # Находим минимальные и максимальные значения для каждой параллели
+        for klass, days in data.items():
+            klass_data = {}
+            for day, values in days.items():
+                mi, mx = 99, -99
+                for val in values: # находим минимальный и максимальный урок для конкретного класса в онкретный день
+                    if val['true_num'] < mi:
+                        mi = val['true_num']
+                    if val['true_num'] > mx:
+                        mx = val['true_num']
+                klass_data[day] = [mi, mx]
+            # Находим нужную параллель
+            for parallel, klasses in parallels.items():
+                if klass in klasses:
+                    for day, val in klass_data.items():
+                        parallels_data[parallel][day] = [min(parallels_data[parallel][day][0], val[0]), max(parallels_data[parallel][day][1], val[1])]
+                    break
+        # Выравниваем количество
+        for parallel, days in parallels_data.items():
+            for day, ms in days.items():
+                for klass in parallels[parallel]:
+                    already_existing = [elem['true_num'] for elem in data[klass][day]]
+                    new_data = []
+                    for add_num in range(ms[0], ms[1]+1):
+                        if add_num not in already_existing:
+                            new_data.append({
+                                'val': [None], 
+                                'short': [None],
+                                'num': add_num-self.second_shift_delay if klass in better_second_shift else add_num,
+                                'true_num': add_num,
+                                'color': "#000000",
+                                'data': {"lesson": None, "teacher": None, "kab": None}
+                            })
+                        else:
+                            new_data.append(data[klass][day][already_existing.index(add_num)])
+                    data[klass][day] = new_data
+        return data
+    
+    def _sort_teacher_table(self, data: dict):
+        """
+        Сортирует расписание учителей (по номеру урока)
+        Принимает 'teachers' из data.
+        Возвращает отсортированный список
+        """
+        res = {}
+        for teacher, days in data.items():
+            res[teacher] = {}
+            for day, values in days.items():
+                vals = sorted(values, key=lambda x: x['num'])
+                res[teacher][day] = vals
+        return res
 
 def save_data_to_table(file: str, day: str, data: dict):
     wb = openpyxl.load_workbook(file) # Открываем файл таблицы

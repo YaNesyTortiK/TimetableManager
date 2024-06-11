@@ -67,11 +67,13 @@ class Config:
     carousel_directory = 'data/carousel/' # Директория с файлами для карусели
     carousel_interactive = True # Будет ли возможность вручную листать карусель. (При отключенном параметре при любом нажатии на карусель она закроется)
 
+    parser_type = 'adaptive' # Тип парсера данных из таблицы. Возможные значения см. в storage.py:Storage:parser_types
+
     program_info = {
         'name': 'Timetable Manager',
         'version': '1.5.0',
-        'modification': 'Experimental',
-        'saved': '08.06.2024 15:26 UTC+3',
+        'modification': 'Stable',
+        'saved': '11.06.2024 18:02 UTC+3',
         'contact_info': 'https://github.com/YaNesyTortiK/TimetableManager'
     }
 
@@ -137,6 +139,8 @@ class Config:
             "carousel_mobile": self.carousel_mobile,
             "carousel_directory": self.carousel_directory,
             "carousel_interactive": self.carousel_interactive,
+
+            "parser_type": self.parser_type,
 
             "funfunct": self.funfunct
         }

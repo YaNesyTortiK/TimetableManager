@@ -51,5 +51,6 @@
     "carousel_mobile": false,
     "carousel_directory": "data/carousel/",
     "carousel_interactive": true,
+    "parser_type": "adaptive",
     "funfunct": true
 }

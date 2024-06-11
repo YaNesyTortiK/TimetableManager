@@ -1,4 +1,4 @@
-from src.tools.table_parser import ClassicParser, AdaptiveParser, save_data_to_table
+from src.tools.table_parser import AdaptiveParser, ClassicParser, save_data_to_table
 from src.tools.logger import Logger
 from datetime import datetime, timedelta, time
 from shutil import copy2
@@ -7,6 +7,10 @@ from os.path import isfile, join
 import re
 
 class Storage:
+    parser_types = {
+        'classic': ClassicParser,
+        'adaptive': AdaptiveParser,
+    }
     def __init__(self, config) -> None:
         self.log = Logger(config.log_filename, config.log_to_console)
         self._updated = datetime.now()
@@ -34,14 +38,14 @@ class Storage:
         if file: # Если файл указан
             try: # Попытка получения данных
                 self._updated = datetime.now() # Обновление даты обновления данных
-                parser = AdaptiveParser(filepath=file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
+                parser = self.parser_types[self._config.parser_type](filepath=file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
                                        short_names=self._config.short, full_names=self._config.full, second_shift_delay=self._config.second_shift_delay)
                 self._data = parser.data # Получение данных
-                self.log(f"Глобальное расписание успешно загружено из файла \"{file}\".")
-                return f"Глобальное расписание успешно загружено из файла \"{file}\".", False
+                self.log(f"Глобальное расписание успешно загружено из файла \"{file}\". Тип парсера: {self._config.parser_type}.")
+                return f"Глобальное расписание успешно загружено из файла \"{file}\".  Тип парсера: {self._config.parser_type}.", False
             except Exception as ex: # В случае ошибки
-                self.log.error(f"Произошла ошибка при попытке обработки файла \"{file}\". Продолжается работа на старых данных! Ошибка: {ex}")
-                return f"Произошла ошибка при попытке обработки файла \"{file}\". Продолжается работа на старых данных! Ошибка: {ex}", True
+                self.log.error(f"Произошла ошибка при попытке обработки файла \"{file}\". Тип парсера: {self._config.parser_type}. Продолжается работа на старых данных! Ошибка: {ex}")
+                return f"Произошла ошибка при попытке обработки файла \"{file}\". Тип парсера: {self._config.parser_type}. Продолжается работа на старых данных! Ошибка: {ex}", True
         else: # Если файл не указан
             try:
                 files = get_filenames(self._config.directory) # Получение имен файлов из папки
@@ -56,14 +60,14 @@ class Storage:
                 else:
                     try: # Попытка получения данных
                         self._updated = datetime.now()# Обновление даты обновления данных
-                        parser = AdaptiveParser(filepath=self._config.directory+files[0], groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
+                        parser = self.parser_types[self._config.parser_type](filepath=self._config.directory+files[0], groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
                                                  short_names=self._config.short, full_names=self._config.full, second_shift_delay=self._config.second_shift_delay)
                         self._data = parser.data # Получение данных
-                        self.log(f"Глобальное расписание успешно загружено из файла \"{self._config.directory+files[0]}\".")
-                        return f"Глобальное расписание успешно загружено из файла \"{self._config.directory+files[0]}\".", False
+                        self.log(f"Глобальное расписание успешно загружено из файла \"{self._config.directory+files[0]}\". Тип парсера: {self._config.parser_type}.")
+                        return f"Глобальное расписание успешно загружено из файла \"{self._config.directory+files[0]}\". Тип парсера: {self._config.parser_type}.", False
                     except Exception as ex: # В случае ошибки
-                        self.log.error(f"Произошла ошибка при попытке обработки файла расписания из файла \"{self._config.directory+files[0]}\". Продолжается работа на старых данных! Ошибка: {ex}")
-                        return f"Произошла ошибка при попытке обработки файла расписания из файла \"{self._config.directory+files[0]}\". Продолжается работа на старых данных! Ошибка: {ex}", True
+                        self.log.error(f"Произошла ошибка при попытке обработки файла расписания из файла \"{self._config.directory+files[0]}\". Тип парсера: {self._config.parser_type}. Продолжается работа на старых данных! Ошибка: {ex}")
+                        return f"Произошла ошибка при попытке обработки файла расписания из файла \"{self._config.directory+files[0]}\". Тип парсера: {self._config.parser_type}. Продолжается работа на старых данных! Ошибка: {ex}", True
 
     @property
     def data(self) -> dict:
@@ -76,7 +80,7 @@ class Storage:
 
     @property
     def default_data(self):
-        parser = AdaptiveParser(filepath=self._config.schema_file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
+        parser = self.parser_types[self._config.parser_type](filepath=self._config.schema_file, groups=self._config.groups, second_shift=self._config.second_shift, allowed_days=self._config.days, 
                            short_names=self._config.short, full_names=self._config.full, second_shift_delay=self._config.second_shift_delay)
         return parser.data
     

@@ -46,6 +46,19 @@
         <p class="inline_elem">Время жизни данных: <input class="inline_elem" type="number" id="lifetime" value="{{ config.lifetime }}" min="0" onchange="unsaved()"> секунд. 
             <p class="why inline_elem"
                 data-tooltip="Как часто программа будет принудительно обновлять данные из файла. Потребуется перезагрузка сервера! (Если установлен 0, автоматического обновления происходить не будет)">(?)</p></p>
+        <p class="inline_elem">Тип парсера данных из файла: 
+            <select name="parser_type" onclick="unsaved()">
+                {%- for opt in parser_types -%}
+                    {% if config.parser_type == opt %}
+                        <option value="{{ opt }}" selected>{{ opt }}</option>
+                    {% else %}
+                        <option value="{{ opt }}">{{ opt }}</option>
+                    {% endif %}
+                {%- endfor -%}
+            </select>
+            <p class="why inline_elem"
+                data-tooltip="Каким образом программа будет обрабатываать таблицу с расписанием. Для подробной информации о типах парсеров прочитайте инструкцию.">(?)</p>
+            </p>
     </div>
     <div class="cfg_elem">
         <h3 class="elem_title">Настройки iframe

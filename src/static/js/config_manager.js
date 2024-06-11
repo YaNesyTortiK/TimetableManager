@@ -23,6 +23,7 @@ const carousel_after_inp = document.getElementById('carousel_after')
 const carousel_delay_inp = document.getElementById('carousel_delay')
 const carousel_mobile_flag = document.getElementById('carousel_mobile')
 const carousel_interactive_flag = document.getElementById('carousel_interactive')
+const parser_select = document.getElementsByName('parser_type')[0]
 
 let edited = true;
 
@@ -241,7 +242,8 @@ function save_data() {
         'carousel_delay': Number(carousel_delay_inp.value),
         'carousel_mobile': carousel_mobile_flag.checked,
         'carousel_directory': carousel_directory_inp.value,
-        'carousel_interactive': carousel_interactive_flag.checked
+        'carousel_interactive': carousel_interactive_flag.checked,
+        'parser_type': parser_select.value
     }
     fetch(save_url, {
         method: 'POST',

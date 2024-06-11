@@ -288,7 +288,7 @@ def carousel_file(path: str):
 @app.route('/config/')
 @flask_login.login_required
 def config_url():
-    return render_template('config_config.html', program_info=config.program_info, config=config)
+    return render_template('config_config.html', program_info=config.program_info, config=config, parser_types=storage.parser_types)
 
 @app.route('/config/save_config/', methods=['POST'])
 @flask_login.login_required

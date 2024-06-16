@@ -126,7 +126,8 @@ def index():
     storage_data = storage.data
     if 'error' in storage_data:
         return render_template('render_index.html', message=storage_data['error'], config=config)
-    return render_template('render_index.html', parallels=storage_data['settings']['klasses'].keys(), show=config.show, bells=pick_bells(config.bells), config=config)
+    is_teachers=True if len(storage.data['teachers'].keys()) else False
+    return render_template('render_index.html', parallels=storage_data['settings']['klasses'].keys(), show=config.show, bells=pick_bells(config.bells), is_teachers=is_teachers, config=config)
 
 @app.route('/get_rendered_parallel/', methods=['POST'])
 def get_rendered_parallel():

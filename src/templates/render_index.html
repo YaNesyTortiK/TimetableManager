@@ -7,7 +7,10 @@
 {% endif %}
 {% endblock %} 
 {% block content %}<div id="timetable_container">{% if message %}<h1 style="color:red">{{ message }}</h1>{% endif %}</div>{% endblock %} 
-{% block footer %}<ul>{% for item in parallels %} {% if item in show %}<button class="footer_button parallel_btn" name="{{ item }}" onclick="load_parallel(this)">{{ item }}</button>{% endif %} {% endfor %}<button class="footer_button parallel_btn" onclick="load_teachers()">Учителя</button>
+{% block footer %}<ul>{% for item in parallels %} {% if item in show %}<button class="footer_button parallel_btn" name="{{ item }}" onclick="load_parallel(this)">{{ item }}</button>{% endif %} {% endfor %}
+    {% if is_teachers %}
+    <button class="footer_button parallel_btn" onclick="load_teachers()">Учителя</button>
+    {% endif %}
     {% if bells %}<button class="footer_button parallel_btn" id="show_bells_btn" style="display: none" onclick="show_bells()">Звонки</button>{% endif %}
     {% if config.carousel and ((config.carousel_mobile and is_mobile) or (not(is_mobile))) %}
         <button class="footer_button parallel_btn" id="show_carousel" onclick="show_carousel()">Карусель</button>

@@ -1,4 +1,4 @@
-from src.tools.table_parser import AdaptiveParser, ClassicParser, save_data_to_table
+from src.tools.table_parser import AdaptiveParser, ClassicParser, SimpleParser, save_data_to_table
 from src.tools.logger import Logger
 from datetime import datetime, timedelta, time
 from shutil import copy2
@@ -10,6 +10,7 @@ class Storage:
     parser_types = {
         'classic': ClassicParser,
         'adaptive': AdaptiveParser,
+        'simple': SimpleParser,
     }
     def __init__(self, config) -> None:
         self.log = Logger(config.log_filename, config.log_to_console)

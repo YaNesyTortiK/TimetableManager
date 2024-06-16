@@ -782,6 +782,127 @@ class AdaptiveParser(ParserABC):
                 res[teacher][day] = vals
         return res
 
+class SimpleParser(ParserABC):
+    """
+    Парсер без распознавания уроков, учителей, кабинетов. Без изменений в соответствии с short_names и full_names. 
+    """
+    def __init__(self, filepath: str, groups: dict[str, list], allowed_days: list, second_shift: list = [], second_shift_delay: int = 6, short_names: dict = {}, full_names: dict = {}) -> None:
+        super().__init__(filepath, groups, allowed_days, second_shift, second_shift_delay, short_names, full_names)
+    
+    def parse(self):
+        wb = self.workbook
+        sheet = wb.active # Получаем активный лист
+        if sheet is None: # Если нет активного листа
+            sheet = wb.worksheets[0] # Принимаем первый лист за активный
+        klasses, days = Settings(wb).settings # Получаем параметры таблицы
+        
+        parallels = {}
+        for klass in klasses.keys(): # Распределение классов по параллелям
+            for group, ingroup in self.groups.items():
+                if klass in ingroup:
+                    if group not in parallels.keys():
+                        parallels[group] = []
+                    if klass not in parallels[group]:
+                        parallels[group].append(klass)
+                    break
+            else:
+                # Если класс не определен в группу
+                if klass[:-1] not in parallels.keys():
+                    parallels[klass[:-1]] = []
+                parallels[klass[:-1]].append(klass)
+        
+        for par in parallels.keys():
+            parallels[par] = sorted(parallels[par])
+
+        better_second_shift = []
+        for group in self.second_shift:
+            if group in parallels.keys():
+                for item in parallels[group]:
+                    better_second_shift.append(item)
+
+        clean_data = self.prepare_data()
+        lessons = {}
+
+        for klass, days in clean_data.items():
+            lessons[klass] = {}
+            for day, data in days.items():
+                if day not in self.allowed_days:
+                    continue # Если день не входит в allowed_days - пропускаем
+                lessons[klass][day] = []
+                for num, value in data.items(): # где value=[строка из таблицы, цвет]
+                    if value[0] is None: # Если нет даннных - пропускаем
+                        continue
+                    cur = {
+                        'val': [value[0]],
+                        'short': [value[0]],
+                        'true_num': int(num),
+                        'num': int(num-self.second_shift_delay) if klass in better_second_shift else int(num),
+                        'color': value[1],
+                        'data': [{"lesson": value[0], "teacher": None, "kab": None}]
+                    }
+                    lessons[klass][day].append(cur)
+
+        return {
+            "weekdays": [i for i in self.allowed_days if i in days.keys()],
+            "klasses": parallels,
+            "lessons": self._beautify_table(lessons, parallels, better_second_shift),
+            "teachers": {},
+            "settings": {
+                "klasses": parallels,
+                "days": days
+            }
+        }
+    
+    def _beautify_table(self, data: dict, parallels: dict, better_second_shift: list) -> dict:
+        """
+        Добавляет пустые уроки, чтобы сравнять параллели по количеству уроков для более удобного просмотра.
+        Принимает словарь lessons и parallels
+        Возвращает словарь lessons
+        """
+        parallels_data = {} # Словарь из: {параллель: {день: [минимальный урок (true_num), максимальный урок (true_num)]}}
+        for parallel in parallels:
+            parallels_data[parallel] = {}
+            for day in self.allowed_days:
+                parallels_data[parallel][day] = [99, -99]
+        
+        # Находим минимальные и максимальные значения для каждой параллели
+        for klass, days in data.items():
+            klass_data = {}
+            for day, values in days.items():
+                mi, mx = 99, -99
+                for val in values: # находим минимальный и максимальный урок для конкретного класса в онкретный день
+                    if val['true_num'] < mi:
+                        mi = val['true_num']
+                    if val['true_num'] > mx:
+                        mx = val['true_num']
+                klass_data[day] = [mi, mx]
+            # Находим нужную параллель
+            for parallel, klasses in parallels.items():
+                if klass in klasses:
+                    for day, val in klass_data.items():
+                        parallels_data[parallel][day] = [min(parallels_data[parallel][day][0], val[0]), max(parallels_data[parallel][day][1], val[1])]
+                    break
+        # Выравниваем количество
+        for parallel, days in parallels_data.items():
+            for day, ms in days.items():
+                for klass in parallels[parallel]:
+                    already_existing = [elem['true_num'] for elem in data[klass][day]]
+                    new_data = []
+                    for add_num in range(ms[0], ms[1]+1):
+                        if add_num not in already_existing:
+                            new_data.append({
+                                'val': [None], 
+                                'short': [None],
+                                'num': add_num-self.second_shift_delay if klass in better_second_shift else add_num,
+                                'true_num': add_num,
+                                'color': "#000000",
+                                'data': {"lesson": None, "teacher": None, "kab": None}
+                            })
+                        else:
+                            new_data.append(data[klass][day][already_existing.index(add_num)])
+                    data[klass][day] = new_data
+        return data
+
 def save_data_to_table(file: str, day: str, data: dict):
     wb = openpyxl.load_workbook(file) # Открываем файл таблицы
     sheet = wb.active # Получаем активный лист

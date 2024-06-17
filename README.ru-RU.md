@@ -116,8 +116,15 @@ gunicorn --bind 0.0.0.0:80 wsgi:app
 
 8. Создайте bash скрипт для автоматического запуска
 ```
-echo "gunicorn --bind 0.0.0.0:80 wsgi:app" > startup.sh
+nano startup.sh
 ```
+Впишите в файл:
+```
+source venv/bin/activate
+gunicorn --bind 0.0.0.0:80 wsgi:app
+```
+Сохраните (Ctrl+O) и выйдите из редактора (Ctrl+X)
+
 9. Добавьте возможность запускать скрипт (если он был создан без этого параметра)
 ```
 chmod +x startup.sh

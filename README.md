@@ -118,8 +118,15 @@ Next setup will use an option for automatic startup using systemd. If you want t
 
 8. Create a bash script to start automatically
 ```
-echo "gunicorn --bind 0.0.0.0:80 wsgi:app" > startup.sh
+nano startup.sh
 ```
+Enter following:
+```
+source venv/bin/activate
+gunicorn --bind 0.0.0.0:80 wsgi:app
+```
+Save (Ctrl+O) and exit (Ctrl+X)
+
 9. Add the ability to run a script (if it was created without this parameter)
 ```
 chmod +x startup.sh

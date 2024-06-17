@@ -46,7 +46,7 @@ This project is a web server program for storing, updating and displaying schedu
 
 # Download and run
 ## Download for Linux
-It is recommended to use Ubuntu 22.04 LTS as the operating system (The following instructions will be written for this system)
+It is recommended to use Ubuntu 24.04 LTS as the operating system (The following instructions will be written for this system)
 ### Install via Docker (recommended)
 1. Update apt
 ```
@@ -129,6 +129,7 @@ chmod +x startup.sh
 ./startup.sh
 ```
 If the program has started and you can log into the server, stop execution.
+If an error appears that it is impossible to access 0.0.0.0:80, leave it like that. This error will be corrected after running the script through systemd.
 
 11. Create a service to autostart when the system starts.
 ```
@@ -140,7 +141,8 @@ Inside the file, write the following, replacing "\<path to file\>" with the path
 Description=Timetable Manager
 After=network.target
 [Service]
-ExecStart=<path to file>
+WorkingDirectory=<path to directory ex: `/home/user/TimetableManager`>
+ExecStart=/bin/bash <path to startup.sh file ex: `/home/user/TimetableManager/startup.sh`>
 [Install]
 WantedBy=default.target
 ```

@@ -205,23 +205,33 @@ def generate_iframe(days: int = config.iframe_days, columns: int = config.iframe
 @app.route('/download_iframe/<int:days>/')
 @app.route('/download_iframe/<int:days>/<int:columns>/')
 @app.route('/download_iframe/<int:days>/<int:columns>/<int:skip>/')
-def download_iframe(days: int = config.iframe_days, columns: int = config.iframe_columns, skip: int = 0, render_to_user: bool = True):
-    data = generate_iframe(days, columns, skip, True)
-    if type(data) == tuple:
+def download_iframe(days: int = config.iframe_days, columns: int = config.iframe_columns, skip: int = 0):
+    data = generate_iframe(days, columns, skip, True) # Iframe can only be downloaded by user, so render_to_user always True
+    if type(data) == tuple: # If error occurs
         return data
     try:
+        if not os.path.exists(f'{ROOT_DIR}/data/tmp'):
+            log.important('Директория data/tmp не была обнаружена, создание...')
+            try:
+                os.mkdir(f'{ROOT_DIR}/data/tmp')
+                log('Директория data/tmp успешно создана')
+            except Exception as ex:
+                log.error(f'Произошла ошибка при создании директории. Exception: {ex}')
         with open(f'{ROOT_DIR}/data/tmp/index.html', 'w') as f:
             f.write(data)
     except Exception as ex:
-        return f'Error occured while saving file to temporary folder. Error: {ex}', 500
+        log.error(f'Произошла ошибка при сохранения файла во временную директорию data/tmp. Error: {ex}')
+        return f'Произошла ошибка при сохранения файла во временную директорию. Error: {ex}', 500
     else:
         try:
             return send_file(f'{ROOT_DIR}/data/tmp/index.html', as_attachment=True, download_name='index.html')
         except Exception as ex:
-            return f'Error occured while sending file to user. Error: {ex}', 500
+            log.error(f'Произошла ошибка при отправлении iframe пользователю. Error: {ex}')
+            return f'Произошла ошибка при отправлении файла. Error: {ex}', 500
 
 
 def save_iframe(days: int = config.iframe_days, columns: int = config.iframe_columns, skip: int = 0):
+
     if not config.save_iframe:
         return '"Save iframe" setting is set to False. Iframe will not be saved', 400
     if not config.iframe_file:

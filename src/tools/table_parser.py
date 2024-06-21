@@ -232,6 +232,23 @@ class ParserABC():
                     val = sheet[f'{col}{row}'].value
                     res[klass][day][lesson] = [val, color]
         return res
+    
+    def _sort_parallels(self, parallels: dict[str, list]) -> dict[str, list]:
+        new_pars = {}
+        for k in self._sort_klasses_items(parallels.keys()):
+            new_pars[k] = parallels[k]
+        return new_pars
+
+    def _sort_klasses_items(self, klasses: list[str]) -> list:
+        """
+        Sorts klasses (All items MUST be str type). FirstL numbers low -> big, then words alphabetically
+        Example:
+        in: ['1', '10', '2', 'cba', 'abc']
+        out: ['1', '2', '10', 'abc', 'cba']
+        """
+        nums = sorted([x for x in klasses if x.isdigit()], key=lambda x: int(x) if type(x) != int else x)
+        words = sorted([x for x in klasses if not x.isdigit()])
+        return nums+words
 
 class ClassicParser(ParserABC):
     def __init__(self, filepath: str, groups: dict[str, list], allowed_days: list, second_shift: list = [], second_shift_delay: int = 6, short_names: dict = {}, full_names: dict = {}) -> None:
@@ -604,7 +621,7 @@ class AdaptiveParser(ParserABC):
 
         return {
             "weekdays": [i for i in self.allowed_days if i in days.keys()],
-            "klasses": parallels,
+            "klasses": self._sort_parallels(parallels),
             "lessons": self._beautify_table(lessons, parallels, better_second_shift),
             "teachers": self._sort_teacher_table(teachers),
             "settings": {
@@ -844,7 +861,7 @@ class SimpleParser(ParserABC):
 
         return {
             "weekdays": [i for i in self.allowed_days if i in days.keys()],
-            "klasses": parallels,
+            "klasses": self._sort_parallels(parallels),
             "lessons": self._beautify_table(lessons, parallels, better_second_shift),
             "teachers": {},
             "settings": {
@@ -904,6 +921,9 @@ class SimpleParser(ParserABC):
         return data
 
 def save_data_to_table(file: str, day: str, data: dict):
+    """
+    # !!! Deprecated !!!
+    """
     wb = openpyxl.load_workbook(file) # Открываем файл таблицы
     sheet = wb.active # Получаем активный лист
     if sheet is None: # Если нет активного листа

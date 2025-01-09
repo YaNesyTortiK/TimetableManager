@@ -439,7 +439,7 @@ iframe - встраиваемый html документ. Используетс�
 ## Лицензия
 Timetable Manager. Web-server to manage, store and distribute timetable on local network with simple and easy to understand design.
 
-Copyright (C) 2024  YaNesyTortik
+Copyright (C) 2025  YaNesyTortik
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -454,4 +454,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact info: github.com/YaNesyTortik/TimetableManager
+Contact info: ya.nesy.tortik.email@gmail.com
